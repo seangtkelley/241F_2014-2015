@@ -9,7 +9,7 @@ Team 241D VEX Robotics Code
   3. Hopefully it should be evident which file is the right one
 
 * To See all Changes:
-  1. Click this: https://github.com/sgtkode/241D_2014-2015/commits/master
+  1. Click this: https://github.com/sgtkode/241D_2014-2015/commits/Development
   
 
 #### Intructions for Others:
