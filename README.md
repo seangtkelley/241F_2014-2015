@@ -1,7 +1,7 @@
-Team 241D VEX Robotics Code
+Team 241F VEX Robotics Code
 ==============
 
-#### Instructions for Team 241D:
+#### Instructions for Team 241F:
 
 * To Download the Code:
   1. Click the "Download Zip" Button at the bottom right of the page
