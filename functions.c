@@ -3,15 +3,14 @@
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  encoderRight,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  encoderLeft,    sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  encoderIntake,  sensorQuadEncoder)
-#pragma config(Sensor, dgtl7,  pnr,            sensorDigitalIn)
-#pragma config(Sensor, dgtl8,  pnl,            sensorDigitalIn)
-#pragma config(Sensor, dgtl9,  armUltra,       sensorSONAR_cm)
-#pragma config(Sensor, dgtl11, armLimit,       sensorTouch)
+#pragma config(Sensor, dgtl5,  armUltra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl7,  intakeLimit,    sensorTouch)
+#pragma config(Sensor, dgtl8,  pnr,            sensorDigitalIn)
+#pragma config(Sensor, dgtl9,  pnl,            sensorDigitalIn)
 #pragma config(Motor,  port2,           FR,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           BR,            tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           BL,            tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port5,           FL,            tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port4,           BL,            tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port5,           FL,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port6,           leftArm,       tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           rightArm,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           leftintake,    tmotorVex393_MC29, openLoop, reversed)
@@ -49,16 +48,16 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int base=1563
-float target=base;
+/*
+int base=1563;
+float target=base; //PID VALUES
 float pGain=.3;
 float iGain=.2;
 float error=target-SensorValue[armp];
 float errorSum=0;
+*/
+
 //bottom=1530   top=3700
-float turn;
-float arm;
-float intake;
 
 
 
@@ -153,64 +152,122 @@ void backwardSeconds(float s, float x=118)
     	motor[BR]=0;
 }
 
-void turnRightDegrees(float degree)
+void turnRightDegrees(float degree, float x=118)
 {
-	degree=degree*10;
+	int initial= SensorValue[gyro];
 	float first=degree*.8;
-	while(abs(SensorValue[gyro]) < first)
+	degree=degree*10;
+
+	SensorValue[encoderLeft] = 0;
+	SensorValue[encoderRight] = 0;
+
+	while(SensorValue[gyro] < initial+first)
 	{
-      motor[FL]=118;
-    	motor[FR]=-118;
-    	motor[BL]=118;
-    	motor[BR]=-118;
+			if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+				motor[FL]=x*.8;
+	    	motor[FR]=-x;
+	    	motor[BL]=x*.8;
+	    	motor[BR]=-x;
+			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+				motor[FL]=x;
+	    	motor[FR]=-x*.8;
+	    	motor[BL]=x;
+	    	motor[BR]=-x*.8;
+			} else {
+				motor[FL]=x;
+	    	motor[FR]=-x;
+	    	motor[BL]=x;
+	    	motor[BR]=-x;
+			}
 	}
-	while(abs(SensorValue[gyro]) < degree)
+	while(SensorValue[gyro] < initial+degree)
 	{
-      motor[FL]=50;
-    	motor[FR]=-50;
-    	motor[BL]=50;
-    	motor[BR]=-50;
+		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+			motor[FL]=x*.5*.5;
+    	motor[FR]=-x*.5;
+    	motor[BL]=x*.5*.5;
+    	motor[BR]=-x*.5;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+			motor[FL]=x*.5;
+    	motor[FR]=-x*.5*.5;
+    	motor[BL]=x*.5;
+    	motor[BR]=-x*.5*.5;
+		} else {
+			motor[FL]=x*.5;
+    	motor[FR]=-x*.5;
+    	motor[BL]=x*.5;
+    	motor[BR]=-x*.5;
+		}
 	}
       motor[FL]=-5;
     	motor[FR]=5;
     	motor[BL]=-5;
     	motor[BR]=5;
-  wait1Msec(250);
+  wait(.03);
   clearMotor();
 }
 
 
 
 
-void turnLeftDegrees(float degree)
+void turnLeftDegrees(float degree, float x=118)
 {
+	int initial= SensorValue[gyro];
 	float first=degree*.8;
 	degree=degree*10;
-	while(abs(SensorValue[gyro]) < first)
+
+	SensorValue[encoderLeft] = 0;
+	SensorValue[encoderRight] = 0;
+
+	while(SensorValue[gyro] < initial+first)
 	{
-      motor[FL]=-118;
-    	motor[FR]=118;
-    	motor[BL]=-118;
-    	motor[BR]=118;
+			if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+				motor[FL]=-x*.5;
+	    	motor[FR]=x;
+	    	motor[BL]=-x*.5;
+	    	motor[BR]=x;
+			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+				motor[FL]=-x;
+	    	motor[FR]=x*.5;
+	    	motor[BL]=-x;
+	    	motor[BR]=x*.5;
+			} else {
+				motor[FL]=-x;
+	    	motor[FR]=x;
+	    	motor[BL]=-x;
+	    	motor[BR]=x;
+			}
 	}
-	while(abs(SensorValue[gyro]) < degree)
+	while(SensorValue[gyro] < initial+degree)
 	{
-      motor[FL]=-50;
-    	motor[FR]=50;
-    	motor[BL]=-50;
-    	motor[BR]=50;
+		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+			motor[FL]=-x*.5*.5;
+    	motor[FR]=x*.5;
+    	motor[BL]=-x*.5*.5;
+    	motor[BR]=x*.5;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+			motor[FL]=-x*.5;
+    	motor[FR]=x*.5*.5;
+    	motor[BL]=-x*.5;
+    	motor[BR]=x*.5*.5;
+		} else {
+			motor[FL]=-x*.5;
+    	motor[FR]=x*.5;
+    	motor[BL]=-x*.5;
+    	motor[BR]=x*.5;
+		}
 	}
       motor[FL]=5;
     	motor[FR]=-5;
     	motor[BL]=5;
     	motor[BR]=-5;
-  wait1Msec(250);
+  wait(.03);
   clearMotor();
 }
 
 
 
-void turnRightTicks(int ticks)
+void turnRightTicks(int ticks, float x=118)
 {
 	SensorValue[encoderLeft]=0;
 	while(SensorValue[encoderLeft]<ticks)
@@ -223,55 +280,55 @@ void turnRightTicks(int ticks)
 }
 
 
-void turnLeftTicks(int ticks)
+void turnLeftTicks(int ticks,float x=118)
 {
 	SensorValue[encoderLeft]=0;
 	while(SensorValue[encoderLeft]<ticks)
 	{
-		motor[FL]=-118;
-		motor[BL]=-118;
-		motor[FR]=118;
-		motor[BR]=118;
+		motor[FL]=-x;
+		motor[BL]=-x;
+		motor[FR]=x;
+		motor[BR]=x;
 	}
 }
 
 
-void turnRightSeconds(float seconds)
+void turnRightSeconds(float seconds, float x=118)
 {
-	motor[FL]=118;
-	motor[BL]=118;
-	motor[FR]=-118;
-	motor[BR]=-118;
+	motor[FL]=x;
+	motor[BL]=x;
+	motor[FR]=-x;
+	motor[BR]=-x;
 	wait(seconds);
 	clearMotor();
 }
-void turnLeftSeconds(float seconds)
+void turnLeftSeconds(float seconds, float x=118)
 {
-	motor[FL]=-118;
-	motor[BL]=-118;
-	motor[FR]=118;
-	motor[BR]=118;
+	motor[FL]=-x;
+	motor[BL]=-x;
+	motor[FR]=x;
+	motor[BR]=x;
 	wait(seconds);
 	clearMotor();
 }
 
 
-void raiseArmTicks(int ticks)
+void raiseArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]<ticks)
 	{
-		motor[leftArm]=118;
-		motor[rightArm]=118;
+		motor[leftArm]=x;
+		motor[rightArm]=x;
 	}
 	motor[leftArm]=0;
 	motor[rightArm]=0;
 }
 
 
-void raiseArmSeconds(float s)
+void raiseArmSeconds(float s, float x=118)
 {
-		motor[leftArm]=118;
-		motor[rightArm]=118;
+		motor[leftArm]=x;
+		motor[rightArm]=x;
 		wait(s);
 		motor[leftArm]=0;
 		motor[rightArm]=0;
@@ -279,12 +336,12 @@ void raiseArmSeconds(float s)
 
 
 
-void lowerArmTicks(int ticks)
+void lowerArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]>ticks)
 	{
-		motor[leftArm]=-118;
-		motor[rightArm]=-118;
+		motor[leftArm]=-x;
+		motor[rightArm]=-x;
 
 	}
 	motor[leftArm]=0;
@@ -293,13 +350,13 @@ void lowerArmTicks(int ticks)
 
 
 
-void lowerArmSeconds(float seconds)
+void lowerArmSeconds(float seconds, float x=118)
 {
-      motor[leftArm]= -118;
-			motor[rightArm]= -118;
+      motor[leftArm]= -x;
+			motor[rightArm]= x;
    		wait(seconds);
-    	motor[leftArm]= -0;
-			motor[rightArm]= -0;
+    	motor[leftArm]= 0;
+			motor[rightArm]= 0;
 }
 
 
@@ -323,11 +380,35 @@ void lowerIntakeSeconds(float s)
 	motor[rightintake]=0;
 }
 
+void raiseIntake()
+{
+	while(SensorValue[intakeLimit] !=1)
+	{
+		motor[leftintake]=118;
+		motor[rightintake]=118;
+	}
+	motor[leftintake]=0;
+	motor[rightintake]=0;
+}
 
+
+void lowerIntake()
+{
+	while(SensorValue[intakeLimit] !=1)
+	{
+		motor[leftintake]=-118;
+		motor[rightintake]=-118;
+	}
+	motor[leftintake]=0;
+	motor[rightintake]=0;
+}
+
+/*
 void retrieve()
 {
+	float distanceFromSkyrise=12; //THE NUMBER OF CENTIMETERS THE ULTRASONIC MUST BE TO LOWER THE ARM AND BE ON TARGET
 	raiseArmTicks(1950);
-	while(SensorValue[armUltra])
+	while(SensorValue[armUltra]>30)
 	{
 		motor[FL]=-80;
 		motor[BL]=-80;
@@ -335,13 +416,16 @@ void retrieve()
 		motor[FR]=80;
 	}
 	turnRightSeconds(.04,80);
+	float distanceFromCenter=sqrt(SensorValue[armUltra]^2+3.5^2);
+	float turn=asin(3.5/SensorValue[armUltra]);
+	turnLeftDegrees(turn);
+	float temp=SensorValue[armUltra];
+	float distanceForward=temp-distanceFromSkyrise;
+	forwardTicks(distanceForward);//The number of ticks in
 }
+*/
 
-
-
-
-
-
+/*
 task armcontrol()
 {
 	while(true)
@@ -352,3 +436,4 @@ task armcontrol()
 		motor[rightArm]= error*pGain+errorSum*iGain;
 	}
 }
+*/
