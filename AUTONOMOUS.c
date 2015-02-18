@@ -28,10 +28,11 @@
 //                                 Autonomous
 //
 //
-//	1st position:Blue Cube score
-//	2nd position:Blue Skyrise score
-//	3rd position:Red Cube score
-//	4th position:Red Skyrise score
+//	1st position: Blue Cube score
+//	2nd position: Blue Skyrise score
+//	3rd position: Red Cube score
+//	4th position: Red Skyrise score
+//  5th position: Raise Arm
 //
 //  **1950 is the height you need to be to retrieve skyrise peices
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,10 @@
 
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 #include "functions.c"
+
+const skyriseHeight = 1950;
+
+heights[1]
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //                                 Pre-Autonomous
@@ -36,6 +40,8 @@
 void pre_auton()
 {
  bStopTasksBetweenModes = true;
+
+
 }
 
 
@@ -257,7 +263,7 @@ task autonomous()  //Programs are chosen by the value of the dial potentiometer.
 			lowerArmSeconds(1.5);
 			motor[BL]=45;
 			motor[FL]=45;//Goes forward and raises the arm at the same time.
-			motor[BR]=45
+			motor[BR]=45;
 			motor[FR]=45;
 			motor[leftArm]=118;
 			motor[rightArm]=118;
@@ -327,112 +333,152 @@ task usercontrol()
 	//startTask(armcontrol);
 
 
-	while (true)
-{
+	while (true) {
+		if(bVEXNETActive){
 
+			//Toggle half speed---------------------------------------------------------------
+			if( vexRT[ Btn7L ] == 1 ) {
+	      if( ! buttonPressed7l ) {
 
-//Toggle half speed---------------------------------------------------------------
-		if( vexRT[ Btn7L ] == 1 )
-  {
-      if( ! buttonPressed7l )
-      {
-      	// change the toggle state
-      	buttonToggleState7l = 1 - buttonToggleState7l;
+	      	// change the toggle state
+	      	buttonToggleState7l = 1 - buttonToggleState7l;
 
-        // Note the button is pressed
-        buttonPressed7l = 1;
-      }
-  }
-  else
-  {
-	  // the button is not pressed
-	   buttonPressed7l = 0;
-	}
-  // Now do something with our toggle flag
-  if( buttonToggleState7l )
-  {
-      half=true;
-  }
-  else
-  {
-      half=false;
-	}
+	        // Note the button is pressed
+	        buttonPressed7l = 1;
+	      }
+	  	} else {
+
+		    // the button is not pressed
+		    buttonPressed7l = 0;
+		  }
+
+		  // Now do something with our toggle flag
+	    if( buttonToggleState7l ) {
+	      half=true;
+	    } else {
+	      half=false;
+		  }
 
 
 
 
 
 
-//Toggle pneumatics------------------------------------------------
-	if( vexRT[ Btn8R ] == 1 )
-  {
-      if( ! buttonPressed8r )
-      {
-      	// change the toggle state
-      	buttonToggleState8r = 1 - buttonToggleState8r;
+	   //Toggle pneumatics------------------------------------------------
+		  if( vexRT[ Btn8R ] == 1 )
+	    {
+	      if( ! buttonPressed8r )
+	      {
+	      	// change the toggle state
+	      	buttonToggleState8r = 1 - buttonToggleState8r;
 
-        // Note the button is pressed
-        buttonPressed8r = 1;
-      }
-  }
-  else
-  {
-	  // the button is not pressed
-	   buttonPressed8r = 0;
-	}
-  // Now do something with our toggle flag
-  if( buttonToggleState8r )
-  {
-      SensorValue[pnr]=1;
-      SensorValue[pnl]=1;
-  }
-  else
-  {
-      SensorValue[pnr]=0;
-      SensorValue[pnl]=0;
-	}
-
-
+	        // Note the button is pressed
+	        buttonPressed8r = 1;
+	      }
+	    }
+	    else
+	    {
+		    // the button is not pressed
+		    buttonPressed8r = 0;
+		  }
+	    // Now do something with our toggle flag
+	    if( buttonToggleState8r )
+	    {
+	      SensorValue[pnr]=1;
+	      SensorValue[pnl]=1;
+	    }
+	    else
+	    {
+	      SensorValue[pnr]=0;
+	      SensorValue[pnl]=0;
+		  }
 
 
-	//DRIVE-----------------------------------------------------
 
 
-		drive(half);
-		motor[leftArm] = 0;
-  	motor[rightArm] = 0;
-		motor[leftintake] = 0;
-  	motor[rightintake] = 0;
+			//DRIVE-----------------------------------------------------
+			if (half==false){ //Check if drive toggles half speed.
+				//give drive direct control.
+				motor[BR] = vexRT[Ch2];
+				motor[FR] = vexRT[Ch2];
+				motor[BL] = vexRT[Ch3];
+				motor[FL] = vexRT[Ch3];
+			} else if(half ==true) {
+				//give drive control but all motor maxes are a third of their orignal max.
+				motor[BR] = vexRT[Ch2]/3;
+				motor[FR] = vexRT[Ch2]/3;
+				motor[BL] = vexRT[Ch3]/3;
+				motor[FL] = vexRT[Ch3]/3;
+			}
 
 
-  	//ARM MOTION----------------------------
+	  	//ARM MOTION----------------------------
+			if(vexRT[Btn6D] == true){
+      	/*if(nMotorEncoder(rightArm) > nMotorEncoder(leftArm)){
+        	motor[rightArm] = 127/2;
+        	motor[leftArm] = 127;
+      	}else if(nMotorEncoder(rightArm) < nMotorEncoder(leftArm)){
+        	motor[rightArm] = 127;
+        	motor[leftArm] = 127/2;
+      	}else{*/
+        	motor[rightArm] = 118;
+        	motor[leftArm] = 118;
+      	//}
+    	}else if(vexRT[Btn5D] == true){
+      	/*if(nMotorEncoder(rightArm) > nMotorEncoder(leftArm)){
+        	motor[rightArm] = -10;
+        	motor[leftArm] = -20;
+      	}else if(nMotorEncoder(rightArm) < nMotorEncoder(leftArm)){
+        	motor[rightArm] = -20;
+        	motor[leftArm] = -10;
+      	}else{*/
+        	motor[rightArm] = -20;
+        	motor[leftArm] = -20;
+      	//}
+    	}else{
+      	motor[rightArm] = 0;
+      	motor[leftArm] = 0;
+    	}
 
+    	if(vexRT[Btn5U] == true){
+      	 motor[rightintake] = 118;
+      	 motor[leftintake] = 118;
+    	}else if(vexRT[Btn6U] == true){
+      	 motor[leftintake] = -118;
+      	 motor[rightintake] = -118;
+    	}else{
+      	motor[rightintake] = 0;
+      	motor[leftintake] = 0;
+    	}
 
-  	while(vexRT[Btn6D] == 1)
-		{
-			motor[leftArm] = 118;
-  		motor[rightArm] = 118;
-  		drive(half);
-		}
+	  	/*while(vexRT[Btn6D] == 1)
+			{
+				motor[leftArm] = 118;
+	  		motor[rightArm] = 118;
+	  		drive(half);
+			}
 
-		while(vexRT[Btn5D] == 1)
-		{
-			motor[leftArm] = -118;
-  		motor[rightArm] = -118;
-  		drive(half);
-		}
+			while(vexRT[Btn5D] == 1)
+			{
+				motor[leftArm] = -118;
+	  		motor[rightArm] = -118;
+	  		drive(half);
+			}
 
-		while(vexRT[Btn5U] == 1)
-		{
-			motor[leftintake] = 118;
-  		motor[rightintake] = 118;
-  		drive(half);
-		}
-		while(vexRT[Btn6U] == 1)
-		{
-			motor[leftintake] = -118;
-  		motor[rightintake] = -118;
-  		drive(half);
+			while(vexRT[Btn5U] == 1)
+			{
+				motor[leftintake] = 118;
+	  		motor[rightintake] = 118;
+	  		drive(half);
+			}
+			while(vexRT[Btn6U] == 1)
+			{
+				motor[leftintake] = -118;
+	  		motor[rightintake] = -118;
+	  		drive(half);
+			}*/
+
+			wait10Msec(1);
 		}
 	}
 }
