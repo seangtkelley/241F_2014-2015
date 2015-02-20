@@ -104,17 +104,36 @@ void forwardTicks(int ticks, float x = 118)
 {
 		ticks=ticks;
 		SensorValue[encoderLeft]=0;
-    while(SensorValue(encoderLeft)<ticks)
+		SensorValue[encoderRight]=0;
+		motor[FL]=50;
+  	motor[FR]=50;
+  	motor[BL]=50;
+  	motor[BR]=50;
+    while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
     {
-      motor[FL]=x;
-    	motor[FR]=x;
-    	motor[BL]=x;
-    	motor[BR]=x;
+      if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
+				motor[FL]=x*.8;
+	    	motor[FR]=x;
+	    	motor[BL]=x*.8;
+	    	motor[BR]=x;
+			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
+				motor[FL]=x;
+	    	motor[FR]=x*.8;
+	    	motor[BL]=x;
+	    	motor[BR]=x*.8;
+			} else {
+				motor[FL]=x;
+	    	motor[FR]=x;
+	    	motor[BL]=x;
+	    	motor[BR]=x;
+			}
     }
-  motor[FL]=0;
-	motor[FR]=0;
-	motor[BL]=0;
-	motor[BR]=0;
+  motor[FL]=-10;
+	motor[FR]=-10;
+	motor[BL]=-10;
+	motor[BR]=-10;
+	wait1Msec(150);
+	clearMotor();
 }
 
 void forwardSeconds(float s,float x=118)
@@ -133,19 +152,33 @@ void forwardSeconds(float s,float x=118)
 void backwardTicks(int ticks, float x=118)
 {
 		ticks=ticks;
-    nMotorEncoder[encoderLeft] = 0;
-    int enctick=SensorValue(encoderLeft);
-    while(enctick>-ticks)
+		SensorValue[encoderLeft]=0;
+		SensorValue[encoderRight]=0;
+    while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
     {
-    motor[FL]=-x;
-		motor[FR]=-x;
-		motor[BL]=-x;
-		motor[BR]=-x;
+	    if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
+					motor[FL]=-x*.8;
+		    	motor[FR]=-x;
+		    	motor[BL]=-x*.8;
+		    	motor[BR]=-x;
+				} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
+					motor[FL]=-x;
+		    	motor[FR]=-x*.8;
+		    	motor[BL]=-x;
+		    	motor[BR]=-x*.8;
+				} else {
+					motor[FL]=-x;
+		    	motor[FR]=-x;
+		    	motor[BL]=-x;
+		    	motor[BR]=-x;
+				}
     }
-	motor[FL]=0;
-	motor[FR]=0;
-	motor[BL]=0;
-	motor[BR]=0;
+	motor[FL]=10;
+	motor[FR]=10;
+	motor[BL]=10;
+	motor[BR]=10;
+	wait1Msec(150);
+	clearMotor();
 }
 
 
@@ -165,14 +198,14 @@ void backwardSeconds(float s, float x=118)
 
 void turnRightDegrees(float degree, float x=118)
 {
-	int initial= SensorValue[gyro];
+	int initial= abs(SensorValue[gyro]);
 	float first=degree*.8;
 	degree=degree*10;
 
 	SensorValue[encoderLeft] = 0;
 	SensorValue[encoderRight] = 0;
 
-	while(SensorValue[gyro] < initial+first)
+	while(abs(SensorValue[gyro]) < initial+first)
 	{
 			if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
 				motor[FL]=x*.8;
@@ -191,18 +224,18 @@ void turnRightDegrees(float degree, float x=118)
 	    	motor[BR]=-x;
 			}
 	}
-	while(SensorValue[gyro] < initial+degree)
+	while(abs(SensorValue[gyro]) < initial+degree)
 	{
 		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
-			motor[FL]=x*.5*.5;
+			motor[FL]=x*.5*.8;
     	motor[FR]=-x*.5;
-    	motor[BL]=x*.5*.5;
+    	motor[BL]=x*.5*.8;
     	motor[BR]=-x*.5;
 		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
 			motor[FL]=x*.5;
-    	motor[FR]=-x*.5*.5;
+    	motor[FR]=-x*.5*.8;
     	motor[BL]=x*.5;
-    	motor[BR]=-x*.5*.5;
+    	motor[BR]=-x*.5*.8;
 		} else {
 			motor[FL]=x*.5;
     	motor[FR]=-x*.5;
@@ -214,7 +247,7 @@ void turnRightDegrees(float degree, float x=118)
     	motor[FR]=5;
     	motor[BL]=-5;
     	motor[BR]=5;
-  	wait1Msec(250);
+  	wait1Msec(100);
   clearMotor();
 }
 
@@ -223,25 +256,25 @@ void turnRightDegrees(float degree, float x=118)
 
 void turnLeftDegrees(float degree, float x=118)
 {
-	int initial= SensorValue[gyro];
+	int initial= abs(SensorValue[gyro]);
 	float first=degree*.8;
 	degree=degree*10;
 
 	SensorValue[encoderLeft] = 0;
 	SensorValue[encoderRight] = 0;
 
-	while(SensorValue[gyro] < initial+first)
+	while(abs(SensorValue[gyro]) < initial+first)
 	{
 			if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
-				motor[FL]=-x*.5;
+				motor[FL]=-x*.8;
 	    	motor[FR]=x;
-	    	motor[BL]=-x*.5;
+	    	motor[BL]=-x*.8;
 	    	motor[BR]=x;
 			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
 				motor[FL]=-x;
-	    	motor[FR]=x*.5;
+	    	motor[FR]=x*.8;
 	    	motor[BL]=-x;
-	    	motor[BR]=x*.5;
+	    	motor[BR]=x*.8;
 			} else {
 				motor[FL]=-x;
 	    	motor[FR]=x;
@@ -249,18 +282,18 @@ void turnLeftDegrees(float degree, float x=118)
 	    	motor[BR]=x;
 			}
 	}
-	while(SensorValue[gyro] < initial+degree)
+	while(abs(SensorValue[gyro]) < initial+degree)
 	{
 		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
-			motor[FL]=-x*.5*.5;
+			motor[FL]=-x*.5*.8;
     	motor[FR]=x*.5;
-    	motor[BL]=-x*.5*.5;
+    	motor[BL]=-x*.5*.8;
     	motor[BR]=x*.5;
 		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
 			motor[FL]=-x*.5;
-    	motor[FR]=x*.5*.5;
+    	motor[FR]=x*.5*.8;
     	motor[BL]=-x*.5;
-    	motor[BR]=x*.5*.5;
+    	motor[BR]=x*.5*.8;
 		} else {
 			motor[FL]=-x*.5;
     	motor[FR]=x*.5;
@@ -272,7 +305,7 @@ void turnLeftDegrees(float degree, float x=118)
     	motor[FR]=-5;
     	motor[BL]=5;
     	motor[BR]=-5;
-  wait1Msec(250);
+  wait1Msec(100);
   clearMotor();
 }
 
@@ -327,8 +360,8 @@ void raiseArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]<ticks)
 	{
-		motor[leftArm]=x;
-		motor[rightArm]=x;
+		motor[leftArm]=-x;
+		motor[rightArm]=-x;
 	}
 	motor[leftArm]=0;
 	motor[rightArm]=0;
@@ -349,8 +382,8 @@ void lowerArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]>ticks)
 	{
-		motor[leftArm]=-x;
-		motor[rightArm]=-x;
+		motor[leftArm]=x;
+		motor[rightArm]=x;
 	}
 	motor[leftArm]=0;
 	motor[rightArm]=0;
@@ -370,8 +403,8 @@ void lowerArmSeconds(float seconds, float x=118)
 void raiseIntakeSeconds(float s)
 {
 
-	motor[leftintake]=-118;
-	motor[rightintake]=-118;
+	motor[leftintake]=118;
+	motor[rightintake]=118;
 	wait1Msec(s*1000);
 	motor[leftintake]=0;
 	motor[rightintake]=0;
@@ -380,8 +413,8 @@ void raiseIntakeSeconds(float s)
 
 void lowerIntakeSeconds(float s)
 {
-	motor[leftintake]=118;
-	motor[rightintake]=118;
+	motor[leftintake]=-118;
+	motor[rightintake]=-118;
 	wait1Msec(s*1000);
 	motor[leftintake]=0;
 	motor[rightintake]=0;
