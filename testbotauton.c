@@ -3,7 +3,10 @@
 #pragma config(Sensor, in3,    lineRight,      sensorLineFollower)
 #pragma config(Sensor, in4,    lineFarLeft,    sensorLineFollower)
 #pragma config(Sensor, in5,    lineFarRight,   sensorLineFollower)
+<<<<<<< HEAD
+=======
 #pragma config(Sensor, in6,    gyro,           sensorGyro)
+>>>>>>> ad6753eaba8958f75940cd8fed654bcfceda7902
 #pragma config(Sensor, dgtl1,  ultasonic,      sensorSONAR_cm)
 #pragma config(Sensor, dgtl3,  encoderLeft,    sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  encoderRight,   sensorQuadEncoder)
