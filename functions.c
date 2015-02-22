@@ -21,8 +21,7 @@
 //
 //                                  Functions
 //
-// This task is used to control your robot during the autonomous phase of a VEX Competition.
-// You must modify the code to add your own robot specific commands here.
+// This file contains functions used by both the autonomous and competition files
 //
 //----------------------------------------------------------------------------------------
 //
@@ -71,7 +70,19 @@ float intake;
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 DRIVETRAIN
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+* @void drive
+*
+* @desc gives drive control to VexNET controller
+*
+* @args  half boolean  determines if motors should be running at half speed
+*/
 void drive(bool half)
 {
 
@@ -92,6 +103,13 @@ void drive(bool half)
 }
 
 
+/**
+* @void clearMotor
+*
+* @desc clears all the motors
+*
+* @args  N/A
+*/
 void clearMotor()
 {
 	motor[FR]=0;
@@ -100,102 +118,150 @@ void clearMotor()
 	motor[BL]=0;
 }
 
-void forwardTicks(int ticks, float x = 118)
+/**
+* @void fullStop
+*
+* @desc completely stops all motors without drift
+*
+* @args  N/A
+*/
+void fullStop()
 {
-		ticks=ticks;
-		SensorValue[encoderLeft]=0;
-		SensorValue[encoderRight]=0;
-		motor[FL]=50;
-  	motor[FR]=50;
-  	motor[BL]=50;
-  	motor[BR]=50;
-    while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
-    {
-      if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
-				motor[FL]=x*.8;
-	    	motor[FR]=x;
-	    	motor[BL]=x*.8;
-	    	motor[BR]=x;
-			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
-				motor[FL]=x;
-	    	motor[FR]=x*.8;
-	    	motor[BL]=x;
-	    	motor[BR]=x*.8;
-			} else {
-				motor[FL]=x;
-	    	motor[FR]=x;
-	    	motor[BL]=x;
-	    	motor[BR]=x;
-			}
-    }
-  motor[FL]=-10;
-	motor[FR]=-10;
-	motor[BL]=-10;
-	motor[BR]=-10;
-	wait1Msec(150);
+	int FR = motor[FR];
+	int FL = motor[FL];
+	int BR = motor[BR];
+	int BL = motor[BL];
+	motor[FR]=FR*-.1;
+	motor[FL]=FL*-.1;
+	motor[BR]=BR*-.1;
+	motor[BL]=BL*-.1;
+	wait1MSec(150);
 	clearMotor();
 }
 
-void forwardSeconds(float s,float x=118)
+
+/**
+* @void forwardTicks
+*
+* @desc moves bot forward a given tick amount
+*
+* @args  ticks  int    amount of ticks to move forward
+*				 x      float  speed of motors
+*/
+void forwardTicks(int ticks, float x = 118)
 {
-      motor[FL]=x;
+	ticks=ticks;
+	SensorValue[encoderLeft]=0;
+	SensorValue[encoderRight]=0;
+	motor[FL]=50;
+	motor[FR]=50;
+	motor[BL]=50;
+	motor[BR]=50;
+  while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
+  {
+    if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
+			motor[FL]=x*.8;
+    	motor[FR]=x;
+    	motor[BL]=x*.8;
+    	motor[BR]=x;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
+			motor[FL]=x;
+    	motor[FR]=x*.8;
+    	motor[BL]=x;
+    	motor[BR]=x*.8;
+		} else {
+			motor[FL]=x;
     	motor[FR]=x;
     	motor[BL]=x;
     	motor[BR]=x;
-    	wait1Msec(s*1000);
-    	motor[FL]=0;
-    	motor[FR]=0;
-    	motor[BL]=0;
-    	motor[BR]=0;
+		}
+  }
+  fullStop();
 }
 
+
+/**
+* @void backwardsTicks
+*
+* @desc moves bot backwards for a given amount of ticks
+*
+* @args  ticks  int    amount of ticks to move forward
+*				 x      float  speed of motors
+*/
 void backwardTicks(int ticks, float x=118)
 {
-		ticks=ticks;
-		SensorValue[encoderLeft]=0;
-		SensorValue[encoderRight]=0;
-    while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
-    {
-	    if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
-					motor[FL]=-x*.8;
-		    	motor[FR]=-x;
-		    	motor[BL]=-x*.8;
-		    	motor[BR]=-x;
-				} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
-					motor[FL]=-x;
-		    	motor[FR]=-x*.8;
-		    	motor[BL]=-x;
-		    	motor[BR]=-x*.8;
-				} else {
-					motor[FL]=-x;
-		    	motor[FR]=-x;
-		    	motor[BL]=-x;
-		    	motor[BR]=-x;
-				}
-    }
-	motor[FL]=10;
-	motor[FR]=10;
-	motor[BL]=10;
-	motor[BR]=10;
-	wait1Msec(150);
-	clearMotor();
-}
-
-
-void backwardSeconds(float s, float x=118)
-{
-      motor[FL]=-x;
+	ticks=ticks;
+	SensorValue[encoderLeft]=0;
+	SensorValue[encoderRight]=0;
+  while(SensorValue(encoderLeft) < ticks && SensorValue[encoderRight] < ticks)
+  {
+  	if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+10 ){
+			motor[FL]=-x*.8;
+    	motor[FR]=-x;
+    	motor[BL]=-x*.8;
+    	motor[BR]=-x;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+10 ){
+			motor[FL]=-x;
+    	motor[FR]=-x*.8;
+    	motor[BL]=-x;
+    	motor[BR]=-x*.8;
+		} else {
+			motor[FL]=-x;
     	motor[FR]=-x;
     	motor[BL]=-x;
     	motor[BR]=-x;
-    	wait1Msec(s*1000);
-    	motor[FL]=0;
-    	motor[FR]=0;
-    	motor[BL]=0;
-    	motor[BR]=0;
+		}
+  }
+	fullStop();
 }
 
 
+/**
+* @void forwardSeconds
+*
+* @desc moves bot forward for a given amount of seconds
+*
+* @args  s  int    amount of seconds to move forward
+				 x  float  speed of motors
+*/
+void forwardSeconds(float s,float x=118)
+{
+  motor[FL]=x;
+	motor[FR]=x;
+	motor[BL]=x;
+	motor[BR]=x;
+	wait1Msec(s*1000);
+	fullStop();
+}
+
+
+/**
+* @void backwardSeconds
+*
+* @desc moves bot backwards for a given amount of seconds
+*
+* @args  s  int    amount of seconds to move forward
+*				 x  float  speed of motors
+*/
+void backwardSeconds(float s, float x=118)
+{
+  motor[FL]=-x;
+	motor[FR]=-x;
+	motor[BL]=-x;
+	motor[BR]=-x;
+	wait1Msec(s*1000);
+	fullStop();
+}
+
+
+/**
+* @void turnRightDegrees
+*
+* @desc turns bot right a given amount of degrees
+*
+* @args  degree  int    amount of degrees to turn right
+*				 x       float  speed of motors
+*/
 void turnRightDegrees(float degree, float x=118)
 {
 	int initial= abs(SensorValue[gyro]);
@@ -207,22 +273,22 @@ void turnRightDegrees(float degree, float x=118)
 
 	while(abs(SensorValue[gyro]) < initial+first)
 	{
-			if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
-				motor[FL]=x*.8;
-	    	motor[FR]=-x;
-	    	motor[BL]=x*.8;
-	    	motor[BR]=-x;
-			} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
-				motor[FL]=x;
-	    	motor[FR]=-x*.8;
-	    	motor[BL]=x;
-	    	motor[BR]=-x*.8;
-			} else {
-				motor[FL]=x;
-	    	motor[FR]=-x;
-	    	motor[BL]=x;
-	    	motor[BR]=-x;
-			}
+		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+			motor[FL]=x*.8;
+    	motor[FR]=-x;
+    	motor[BL]=x*.8;
+    	motor[BR]=-x;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+			motor[FL]=x;
+    	motor[FR]=-x*.8;
+    	motor[BL]=x;
+    	motor[BR]=-x*.8;
+		} else {
+			motor[FL]=x;
+    	motor[FR]=-x;
+    	motor[BL]=x;
+    	motor[BR]=-x;
+		}
 	}
 	while(abs(SensorValue[gyro]) < initial+degree)
 	{
@@ -243,17 +309,18 @@ void turnRightDegrees(float degree, float x=118)
     	motor[BR]=-x*.5;
 		}
 	}
-      motor[FL]=-5;
-    	motor[FR]=5;
-    	motor[BL]=-5;
-    	motor[BR]=5;
-  	wait1Msec(100);
-  clearMotor();
+  fullStop();
 }
 
 
-
-
+/**
+* @void turnLeftDegrees
+*
+* @desc turns bot left a given amount of degrees
+*
+* @args  degree  int    amount of degrees to turn left
+*				 x       float  speed of motors
+*/
 void turnLeftDegrees(float degree, float x=118)
 {
 	int initial= abs(SensorValue[gyro]);
@@ -301,41 +368,87 @@ void turnLeftDegrees(float degree, float x=118)
     	motor[BR]=x*.5;
 		}
 	}
-      motor[FL]=5;
-    	motor[FR]=-5;
-    	motor[BL]=5;
-    	motor[BR]=-5;
-  wait1Msec(100);
-  clearMotor();
+  fullStop();
 }
 
 
 
+/**
+* @void turnRightTicks
+*
+* @desc turns bot right a given amount of ticks
+*
+* @args  ticks   int    amount of ticks to turn right
+*				 x       float  speed of motors
+*/
 void turnRightTicks(int ticks, float x=118)
 {
 	SensorValue[encoderLeft]=0;
 	while(SensorValue[encoderLeft]<ticks)
 	{
-		motor[FL]=x;
-		motor[BL]=x;
-		motor[FR]=-x;
-		motor[BR]=-x;
+		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+			motor[FL]=x*.8;
+    	motor[FR]=-x;
+    	motor[BL]=x*.8;
+    	motor[BR]=-x;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+			motor[FL]=x;
+    	motor[FR]=-x*.8;
+    	motor[BL]=x;
+    	motor[BR]=-x*.8;
+		} else {
+			motor[FL]=x;
+    	motor[FR]=-x;
+    	motor[BL]=x;
+    	motor[BR]=-x;
+		}
 	}
+	fullStop();
 }
 
 
-void turnLeftTicks(int ticks,float x=118)
+/**
+* @void turnLeftTicks
+*
+* @desc turns bot left a given amount of ticks
+*
+* @args  ticks   int    amount of ticks to turn left
+*				 x       float  speed of motors
+*/
+void turnLeftTicks(int ticks, float x=118)
 {
 	SensorValue[encoderLeft]=0;
 	while(SensorValue[encoderLeft]<ticks)
 	{
-		motor[FL]=-x;
-		motor[BL]=-x;
-		motor[FR]=x;
-		motor[BR]=x;
+		if( abs(SensorValue[encoderLeft]) >= abs(SensorValue[encoderRight])+5 ){
+			motor[FL]=-x*.8;
+    	motor[FR]=x;
+    	motor[BL]=-x*.8;
+    	motor[BR]=x;
+		} else if( abs(SensorValue[encoderRight]) >= abs(SensorValue[encoderLeft])+5 ){
+			motor[FL]=-x;
+    	motor[FR]=x*.8;
+    	motor[BL]=-x;
+    	motor[BR]=x*.8;
+		} else {
+			motor[FL]=-x;
+    	motor[FR]=x;
+    	motor[BL]=-x;
+    	motor[BR]=x;
+		}
 	}
+	fullStop();
 }
 
+
+/**
+* @void turnRightSeconds
+*
+* @desc turns bot right a given amount of seconds
+*
+* @args  seconds   int    amount of seconds to turn right
+*				 x         float  speed of motors
+*/
 void turnRightSeconds(float seconds, float x=118)
 {
 	motor[FL]=x;
@@ -343,8 +456,17 @@ void turnRightSeconds(float seconds, float x=118)
 	motor[FR]=-x;
 	motor[BR]=-x;
 	wait1Msec(seconds*1000);
-	clearMotor();
+	fullStop();
 }
+
+/**
+* @void turnLeftSeconds
+*
+* @desc turns bot left a given amount of seconds
+*
+* @args  seconds   int    amount of seconds to turn left
+*				 x         float  speed of motors
+*/
 void turnLeftSeconds(float seconds, float x=118)
 {
 	motor[FL]=-x;
@@ -352,10 +474,25 @@ void turnLeftSeconds(float seconds, float x=118)
 	motor[FR]=x;
 	motor[BR]=x;
 	wait1Msec(seconds*1000);
-	clearMotor();
+	fullStop();
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 ARM
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+* @void raiseArmTicks
+*
+* @desc raises arm a given amount of ticks
+*
+* @args  ticks   int    amount of ticks to raise arm
+*				 x       float  speed of motors
+*/
 void raiseArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]<ticks)
@@ -367,17 +504,14 @@ void raiseArmTicks(int ticks,float x=118)
 	motor[rightArm]=0;
 }
 
-
-void raiseArmSeconds(float s, float x=118)
-{
-		motor[leftArm]=x;
-		motor[rightArm]=x;
-		wait1Msec(s*1000);
-		motor[leftArm]=0;
-		motor[rightArm]=0;
-}
-
-
+/**
+* @void lowerArmTicks
+*
+* @desc lowers arm a given amount of ticks
+*
+* @args  ticks   int    amount of ticks to lower arm
+*				 x       float  speed of motors
+*/
 void lowerArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]>ticks)
@@ -389,20 +523,50 @@ void lowerArmTicks(int ticks,float x=118)
 	motor[rightArm]=0;
 }
 
-
-void lowerArmSeconds(float seconds, float x=118)
+/**
+* @void raiseArmSeconds
+*
+* @desc raises arm a given amount of seconds
+*
+* @args  s   int    amount of seconds to raise arm
+*				 x   float  speed of motors
+*/
+void raiseArmSeconds(float s, float x=118)
 {
-      motor[leftArm]= -x;
-			motor[rightArm]= x;
-   		wait1Msec(seconds*1000);
-    	motor[leftArm]= 0;
-			motor[rightArm]= 0;
+	motor[leftArm]=x;
+	motor[rightArm]=x;
+	wait1Msec(s*1000);
+	motor[leftArm]=0;
+	motor[rightArm]=0;
 }
 
 
+/**
+* @void lowerArmSeconds
+*
+* @desc lowers arm a given amount of seconds
+*
+* @args  s   int    amount of seconds to raise arm
+*				 x   float  speed of motors
+*/
+void lowerArmSeconds(float seconds, float x=118)
+{
+  motor[leftArm]= -x;
+	motor[rightArm]= x;
+	wait1Msec(seconds*1000);
+	motor[leftArm]= 0;
+	motor[rightArm]= 0;
+}
+
+/**
+* @void raiseIntakeSeconds
+*
+* @desc raises intake a given amount of seconds
+*
+* @args  s   int    amount of seconds to raise intake
+*/
 void raiseIntakeSeconds(float s)
 {
-
 	motor[leftintake]=118;
 	motor[rightintake]=118;
 	wait1Msec(s*1000);
@@ -410,7 +574,13 @@ void raiseIntakeSeconds(float s)
 	motor[rightintake]=0;
 }
 
-
+/**
+* @void lowerIntakeSeconds
+*
+* @desc lowers intake a given amount of seconds
+*
+* @args  s   int    amount of seconds to lower intake
+*/
 void lowerIntakeSeconds(float s)
 {
 	motor[leftintake]=-118;
@@ -420,6 +590,13 @@ void lowerIntakeSeconds(float s)
 	motor[rightintake]=0;
 }
 
+/**
+* @void raiseIntake
+*
+* @desc raises intake to highest point
+*
+* @args  N/A
+*/
 void raiseIntake()
 {
 	while(SensorValue[intakeLimit] !=1)
@@ -432,6 +609,13 @@ void raiseIntake()
 }
 
 
+/**
+* @void lowerIntake
+*
+* @desc lowers intake to lowest point
+*
+* @args  N/A
+*/
 void lowerIntake()
 {
 	while(SensorValue[intakeLimit] !=1)
@@ -444,6 +628,41 @@ void lowerIntake()
 }
 
 
+/**
+* @task armcontrol
+*
+* @desc raises or lowers arm to certain point
+*       using PI loop
+*
+* @args target float tick value target for arm
+*/
+task armcontrol(float target){
+	// 1563:
+		//float target = 1563; //pot val at scoring height pos0
+	float pGain = .3;
+	float iGain = .2;
+	float error = target-SensorValue[armp];
+	float errorSum=0;
+
+	while(true){
+		error=target-SensorValue[armp];
+		errorSum+=error;
+		motor[leftArm]= error*pGain+errorSum*iGain;
+		motor[rightArm]= error*pGain+errorSum*iGain;
+	}
+}
+
+
+
+/**
+* ###### NOT FINISHED ######
+* @void retrieve
+*
+* @desc gets skyrise
+*
+*
+* @args  N/A
+*/
 void retrieve()
 {
 	float distanceFromSkyrise=12; //THE NUMBER OF CENTIMETERS THE ULTRASONIC MUST BE TO LOWER THE ARM AND BE ON TARGET
@@ -461,21 +680,4 @@ void retrieve()
 	float temp=SensorValue[armUltra];
 	float distanceForward=temp-distanceFromSkyrise;
 	forwardTicks(distanceForward);//The number of ticks in
-}
-
-
-task armcontrol(){
-	// 1563:
-		//float target = 1563; //pot val at scoring height pos0
-	float pGain = .3;
-	float iGain = .2;
-	float error = target-SensorValue[armp];
-	float errorSum=0;
-
-	while(true){
-		error=target-SensorValue[armp];
-		errorSum+=error;
-		motor[leftArm]= error*pGain+errorSum*iGain;
-		motor[rightArm]= error*pGain+errorSum*iGain;
-	}
 }
