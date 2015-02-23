@@ -27,23 +27,32 @@
 //
 //                                    INDEX
 //
-// drive: gives the controller control of the wheels.
-// clearmotor: sets all drivemotors to 0.
-// forwardd: Move forward by a certain amount of ticks.
-// forwards: Move forward by a duration of time.
-// backwardd: Move backward a certain amount of ticks.
-// backwards:Move backward a duration of time.
-// correctturn: Put a certain amount of degrees and the robot gets the most efficiant way to turn done in ticks.
-// turnright: turn right by ticks.
-// turnleft: turn left by ticks.
-// turnr:turn right for a duration of time.
-// turnl:turn left for a duration of time.
-// raisearm: raise arm a certain amount of ticks.
-// lowerarm: lower arm for a duration of time.
-// increment: Move the arm to a specified level.
-// raiseintake: Raise the intake to pick up cubes.
-// lowerintake: lower the intake to pick up cubes.
+//  drive:--------------Gives drive control to vexnet controller.
+//  clearMotor:---------Sets motor values to 0.
+//  fullStop:-----------Completely stops all motors without drift.
+//  forwardTicks:-------Moves bot forward a given tick amount.
+//  backwardTicks:------Moves bot backwards a given amount of ticks.
+//  forwardSeconds:-----Moves bot forward a given amount of seconds.
+//  backwardSeconds:----Moves bot backwards a given amount of seconds.
+//  turnRightDegrees:---Turn bot right a certain amount of degrees.
+//  turnLeftDegrees:----Turn bot left a certain amount of degrees.
+//  turnRightTicks:-----Turn bot right a certain amount of ticks.
+//  turnLeftTicks:------Turn bot left a certain amount of ticks.
+//  turnRightSeconds:---Turn bot right a certain amount of seconds.
+//  turnLeftSeconds:----Turn bot left a certain amount of seconds.
+//  raiseArmTicks:------Raises arm a given amount of ticks.
+//  lowerArmTicks:------Lowers arm a given amount of ticks.
+//  raiseArmSeconds:----Raises arm a given amount of seconds.
+//  lowerArmSeconds:----Lowers arm a given amount of seconds.
+//  raiseIntake:--------Raises intake until at the propper height to pick up a cube.
+//  lowerIntake:--------lowers intake until at the propper height to pick up a cube.
+//  raiseIntakeSeconds:-Raises intake a given amount of seconds.
+//  lowerIntakeSecondsL-Lowers intake a given amount of seconds.
 //
+//  WORKS IN PROGRESS
+//
+//  Armcontrol:---------Keeps arm at a constant height.
+//  Retrieve:-----------Scans and picks up a skyrise section from the holder.
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,7 +144,7 @@ void fullStop()
 	motor[FL]=FL*-.1;
 	motor[BR]=BR*-.1;
 	motor[BL]=BL*-.1;
-	wait1MSec(150);
+	wait1Msec(150);
 	clearMotor();
 }
 
@@ -559,38 +568,6 @@ void lowerArmSeconds(float seconds, float x=118)
 }
 
 /**
-* @void raiseIntakeSeconds
-*
-* @desc raises intake a given amount of seconds
-*
-* @args  s   int    amount of seconds to raise intake
-*/
-void raiseIntakeSeconds(float s)
-{
-	motor[leftintake]=118;
-	motor[rightintake]=118;
-	wait1Msec(s*1000);
-	motor[leftintake]=0;
-	motor[rightintake]=0;
-}
-
-/**
-* @void lowerIntakeSeconds
-*
-* @desc lowers intake a given amount of seconds
-*
-* @args  s   int    amount of seconds to lower intake
-*/
-void lowerIntakeSeconds(float s)
-{
-	motor[leftintake]=-118;
-	motor[rightintake]=-118;
-	wait1Msec(s*1000);
-	motor[leftintake]=0;
-	motor[rightintake]=0;
-}
-
-/**
 * @void raiseIntake
 *
 * @desc raises intake to highest point
@@ -627,6 +604,39 @@ void lowerIntake()
 	motor[rightintake]=0;
 }
 
+/**
+* @void raiseIntakeSeconds
+*
+* @desc raises intake a given amount of seconds
+*
+* @args  s   int    amount of seconds to raise intake
+*/
+void raiseIntakeSeconds(float s)
+{
+	motor[leftintake]=118;
+	motor[rightintake]=118;
+	wait1Msec(s*1000);
+	motor[leftintake]=0;
+	motor[rightintake]=0;
+}
+
+/**
+* @void lowerIntakeSeconds
+*
+* @desc lowers intake a given amount of seconds
+*
+* @args  s   int    amount of seconds to lower intake
+*/
+void lowerIntakeSeconds(float s)
+{
+	motor[leftintake]=-118;
+	motor[rightintake]=-118;
+	wait1Msec(s*1000);
+	motor[leftintake]=0;
+	motor[rightintake]=0;
+}
+
+
 
 /**
 * @task armcontrol
@@ -636,22 +646,27 @@ void lowerIntake()
 *
 * @args target float tick value target for arm
 */
-task armcontrol(float target){
+
+
+/*
+task armcontrol(float target)
+{
 	// 1563:
-		//float target = 1563; //pot val at scoring height pos0
+	//float target = 1563; //pot val at scoring height pos0
 	float pGain = .3;
 	float iGain = .2;
 	float error = target-SensorValue[armp];
 	float errorSum=0;
 
-	while(true){
+	while(true)
+	{
 		error=target-SensorValue[armp];
 		errorSum+=error;
 		motor[leftArm]= error*pGain+errorSum*iGain;
 		motor[rightArm]= error*pGain+errorSum*iGain;
 	}
 }
-
+*/
 
 
 /**

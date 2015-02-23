@@ -443,35 +443,7 @@ task usercontrol(){
       	motor[rightintake] = 0;
       	motor[leftintake] = 0;
     	}
-
-	  	/*while(vexRT[Btn6D] == 1)
-			{
-				motor[leftArm] = 118;
-	  		motor[rightArm] = 118;
-	  		drive(half);
-			}
-
-			while(vexRT[Btn5D] == 1)
-			{
-				motor[leftArm] = -118;
-	  		motor[rightArm] = -118;
-	  		drive(half);
-			}
-
-			while(vexRT[Btn5U] == 1)
-			{
-				motor[leftintake] = 118;
-	  		motor[rightintake] = 118;
-	  		drive(half);
-			}
-			while(vexRT[Btn6U] == 1)
-			{
-				motor[leftintake] = -118;
-	  		motor[rightintake] = -118;
-	  		drive(half);
-			}*/
-
-			wait10Msec(1);
+			wait1Msec(10);
 		}
 	}
 }

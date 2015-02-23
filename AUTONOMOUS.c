@@ -54,50 +54,6 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Blue side block || Put block on post turn around grab two and put them somewhere
 	if (position>=firstPos&&position<secondPos)
 	{
-		backwardSeconds(.33);
-		raiseArmSeconds(1);
-		lowerIntakeSeconds(1);//Drop Cube on post
-		backwardSeconds(.2);
-		lowerArmSeconds(1);
-		forwardSeconds(.1);
-		motor[FR]=118;
-		motor[BR]=118;
-		wait1Msec(.4*1000);
-		clearMotor();
-		turnLeftSeconds(.63);
-		forwardSeconds(.12);
-		motor[FR]=118;
-		motor[BR]=118;
-		wait1Msec(.1*1000);
-		clearMotor();
-		wait1Msec(.5*1000);
-		raiseIntakeSeconds(1.3); //pick up cube on crosshair
-		backwardSeconds(.3);
-		turnLeftSeconds(.18);
-		forwardSeconds(.6);
-		wait1Msec(.5*1000);
-		raiseIntakeSeconds(1.2); //Pick up second cube
-
-
-		//To put on post
-		backwardSeconds(.7);
-		turnLeftSeconds(1.15);
-		backwardSeconds(.5);
-		raiseArmTicks(2500);
-		forwardSeconds(1.1);
-		lowerIntakeSeconds(.3);
-		forwardSeconds(.1);
-		lowerIntakeSeconds(2);
-
-
-		//To put on skyrise
-		/*backwardSeconds(.5);
-		turnRightSeconds(.6);
-		backwardSeconds(.4);
-		turnRightSeconds(.2);
-		raiseArmTicks(1800);
-		lowerIntakeSeconds(5);
-		*/
 	}
 
 
@@ -105,62 +61,6 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Blue side skyrise
 	else if (position>=secondPos&&position<thirdPos)
 	{
-		turnRightSeconds(.13);
-
-		backwardSeconds(.6,90);
-		raiseArmTicks(1950);
-		forwardSeconds(.67,90);
-		lowerArmSeconds(.6);
-		raiseArmTicks(2300);
-		backwardSeconds(.4,90);
-
-		motor[BL]=60;
-		motor[FL]=60;
-		motor[BR]=-60;
-		motor[FR]=-60;
-		wait1Msec(.7*1000);
-		clearMotor();
-
-		forwardSeconds(.2,90);
-		lowerArmSeconds(1.5);
-		motor[BL]=45;
-		motor[FL]=45;
-		motor[BR]=45;
-		motor[FR]=45;
-		motor[leftArm]=118;
-		motor[rightArm]=118;
-		wait1Msec(.3*1000);
-		clearMotor();
-		raiseArmSeconds(1);
-		//backwardSeconds(.15,90);//end of first cube
-
-
-		motor[BL]=-100;
-		motor[FL]=-100;
-		wait1Msec(.5*1000);
-		motor[BL]=-100;
-		motor[FL]=-100;
-		motor[BR]=100;
-		motor[FR]=100;
-		wait1Msec(.15*1000);
-		clearMotor();
-
-		/*
-		wait(.2);
-		forwardSeconds(.2,90);
-		lowerArmSeconds(1);
-		raiseArmTicks(2300);
-		motor[BR]=-100;
-		motor[FR]=-100;
-		wait(.75);
-		motor[BL]=100;
-		motor[FL]=100;
-		wait(.2);
-		clearMotor();
-		forwardSeconds(.25);
-		lowerArmSeconds(1);
-		raiseArmSeconds(1);
-		*/
 	}
 
 
@@ -168,50 +68,6 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Red side cube
 	else if(position>=thirdPos&&position<fourthPos)
 	{
-		backwardSeconds(.33);
-		raiseArmSeconds(1);
-		lowerIntakeSeconds(1);//Drop Cube on post
-		backwardSeconds(.2);
-		lowerArmSeconds(1);
-		forwardSeconds(.1);
-		motor[FL]=118;
-		motor[BL]=118;
-		wait1Msec(.4*1000);
-		clearMotor();
-		turnRightSeconds(.63);
-		forwardSeconds(.12);
-		motor[FL]=118;
-		motor[BL]=118;
-		wait1Msec(.1*1000);
-		clearMotor();
-		wait1Msec(.5*1000);
-		raiseIntakeSeconds(1.3); //pick up cube on crosshair
-		backwardSeconds(.3);
-		turnRightSeconds(.18);
-		forwardSeconds(.6);
-		wait1Msec(.5*1000);
-		raiseIntakeSeconds(1.2); //Pick up second cube
-
-
-		//To put on post
-		backwardSeconds(.7);
-		turnRightSeconds(1.15);
-		backwardSeconds(.5);
-		raiseArmTicks(2500);
-		forwardSeconds(1.1);
-		lowerIntakeSeconds(.3);
-		forwardSeconds(.1);
-		lowerIntakeSeconds(2);
-
-
-		//To put on skyrise
-		/*backwardSeconds(.5);
-		turnRightSeconds(.6);
-		backwardSeconds(.4);
-		turnRightSeconds(.2);
-		raiseArmTicks(1800);
-		lowerIntakeSeconds(5);
-		*/
 	}
 
 
@@ -219,66 +75,6 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Red side skyrise
 	else if(position>=fourthPos&&position<fifthPos)
 	{
-		turnLeftSeconds(.13);
-		turnRightSeconds(.1);
-		backwardSeconds(.6,90);
-		raiseArmTicks(1950);
-		forwardSeconds(.62,90);
-		lowerArmSeconds(.6);
-		raiseArmTicks(2300);
-		backwardSeconds(1,90);
-
-		motor[BL]=-60;
-		motor[FL]=-60;
-		motor[BR]=60;
-		motor[FR]=60;
-		wait1Msec(.5*1000);
-		clearMotor();
-
-		forwardSeconds(.45,90);
-		lowerArmSeconds(1.5);
-		motor[BL]=-45;
-		motor[FL]=-45;
-		//motor[BR]=45;
-		//motor[FR]=45;
-		motor[leftArm]=118;
-		motor[rightArm]=118;
-		wait1Msec(.3*1000);
-		clearMotor();
-		motor[BL]=-45;
-		motor[FL]=-45;
-		wait1Msec(.5*1000);
-		backwardSeconds(.2);
-		raiseArmSeconds(1);
-		//backwardSeconds(.15,90);//end of first cube
-
-
-		motor[BR]=-100;
-		motor[FR]=-100;
-		wait1Msec(.5*1000);
-		motor[BL]=100;
-		motor[FL]=100;
-		motor[BR]=-100;
-		motor[FR]=-100;
-		wait1Msec(.15*1000);
-		clearMotor();
-
-		/*
-		wait(.2);
-		forwardSeconds(.2,90);
-		lowerArmSeconds(1);
-		raiseArmTicks(2300);
-		motor[BL]=-100;
-		motor[FL]=-100;
-		wait(.75);
-		motor[BR]=100;
-		motor[FR]=100;
-		wait(.2);
-		clearMotor();
-		forwardSeconds(.25);
-		lowerArmSeconds(1);
-		raiseArmSeconds(1);
-		*/
 	}
 
 
