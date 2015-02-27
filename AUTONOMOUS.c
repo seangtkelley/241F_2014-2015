@@ -72,6 +72,7 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Blue side block || Put block on post turn around grab two and put them somewhere
 	if (position>=firstPos&&position<secondPos)
 	{
+		/*11 POINTS
 		fancyTurnLeftDegrees(27,false,50);
 		backwardTicks(60,50);
 		wait(.3);
@@ -101,8 +102,9 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		lowerArmSeconds(.1);
 		lowerIntakeSeconds(2);
 		backwardTicks(30);
+		*/
 
-		/*WORKING AUTO
+		//WORKING AUTO
 		//wait(6.5);
 		forwardTicks(130,118);
 		raiseIntakeSeconds(.8);
@@ -113,6 +115,7 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		backwardTicks(100,118);
 		turnRightDegrees(5.5);
 
+		/*
 		//Onto skyrise
 		backwardTicks(100,118);
 		raiseArmTicks(skyriseHeight);
@@ -120,20 +123,20 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		lowerArmTicks(1700);
 		lowerIntakeSeconds(2);
 		backwardSeconds(.3);
-		/*
+		*/
 
 		//Onto Post
-		/*
+		///*
 		turnRightDegrees(60);
 		backwardTicks(100);
-		turnRightDegrees(67);
+		turnRightDegrees(30);
 		backwardTicks(200);
 		raiseArmTicks(2950);
 		forwardTicks(310);
 		lowerArmSeconds(.2);
 		lowerIntakeSeconds(1.5);
 		backwardSeconds(.4);
-		*/
+		//*/
 	}
 
 
@@ -141,6 +144,20 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Blue side skyrise
 	else if (position>=secondPos&&position<thirdPos)
 	{
+
+		turnRightDegrees(15,50);
+		lowerIntakeSeconds(.5);
+		fancyTurnRightDegrees(25,false,50);
+		raiseArmTicks(skyriseHeight);
+		fancyTurnLeftDegrees(37,true,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(2100);
+		fancyTurnLeftDegrees(40,false,50);
+		fancyTurnRightDegrees(39,true,50);
+		forwardTicks(7,50);
+		lowerArmSeconds(1.2);
+		raiseArmTicks(skyriseHeight);
+		/*
 		fancyTurnLeftDegrees(39.3,false,60);
 		raiseArmTicks(skyriseHeight);
 		forwardTicks(14,60);
@@ -154,6 +171,7 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		fullStop(10);
 		lowerArmSeconds(3);
 		raiseArmTicks(1950);
+		*/
 	}
 
 
