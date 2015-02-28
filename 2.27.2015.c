@@ -3,9 +3,10 @@
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  encoderRight,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  encoderLeft,    sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  pnsky,          sensorDigitalOut)
-#pragma config(Sensor, dgtl6,  armultra,       sensorSONAR_cm)
-#pragma config(Sensor, dgtl8,  intakeLimit,    sensorTouch)
+#pragma config(Sensor, dgtl5,  armUltra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl7,  intakeLimit,    sensorTouch)
+#pragma config(Sensor, dgtl8,  pnr,            sensorDigitalIn)
+#pragma config(Sensor, dgtl9,  pnl,            sensorDigitalIn)
 #pragma config(Motor,  port2,           FR,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           BR,            tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           BL,            tmotorVex393_MC29, openLoop, reversed)
@@ -61,48 +62,85 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 
 	int position=SensorValue[dial];
 	SensorValue(encoderLeft)=0;
+	//startTask(armcontrol);
+	/*SensorType[in3]=sensorNone;
+	wait1Msec(1000);
+	SensorType[in3]=sensorGyro;
+	wait1Msec(2000);
+	*/
 	//11111111111111111111111111111111111111111111111111111111111111111111111111
 	//Blue side block || Put block on post turn around grab two and put them somewhere
 	if (position>=firstPos&&position<secondPos)
 	{
-		//Onto skyrise
-		/*
-		//wait(1.1);
-		forwardTicks(10,50);
-		forwardTicks(130,118);
-		raiseIntake();//Pick up cube
-		forwardTicks(250,118);
-		turnRightDegrees(35,50);
-		backwardTicks(210,50);
-		fancyTurnLeftDegrees(52.5,false,50);
-		//backwardTicks(130,50);
-		raiseArmTicks(1850);
-		forwardTicks(1,50);
-		//lowerArmSeconds(.2);
-		lowerIntakeSeconds(2);
+		/*11 POINTS
+		fancyTurnLeftDegrees(27,false,50);
+		backwardTicks(60,50);
 		wait(.3);
-		//*/
+		raiseArmTicks(1950);
+		lowerIntakeSeconds(1);
+		fancyTurnRightDegrees(27,false,50);
+		lowerArmSeconds(1);
+		//First Cube
+		turnLeftDegrees(20,50);
+		fancyTurnLeftDegrees(52,50);
+		forwardTicks(150,50);
+		wait(.3);
+		raiseIntakeSeconds(1.4);
+		//Second Cube
+		forwardTicks(400,50);
+		fancyTurnLeftDegrees(33,false,50);
+		backwardTicks(50,50);
+		fancyTurnLeftDegrees(37,false,50);
+		forwardTicks(60,50);
+		wait(.6);
+		raiseIntakeSeconds(1.2);
+		//Onto Post
+		turnRightDegrees(19,50);
+		raiseArmTicks(1850);
+		wait(.3);
+		forwardTicks(50,50);
+		lowerArmSeconds(.1);
+		lowerIntakeSeconds(2);
+		backwardTicks(30);
+		*/
+
+		//WORKING AUTO
+		//wait(6.5);
+		forwardTicks(130,118);
+		raiseIntakeSeconds(.8);
+		forwardTicks(50,118);
+		turnRightDegrees(15);
+		backwardTicks(100,118);
+		turnRightDegrees(10);
+		backwardTicks(100,118);
+		turnRightDegrees(5.5);
+
+		/*
+		//Onto skyrise
+		backwardTicks(100,118);
+		raiseArmTicks(skyriseHeight);
+		forwardTicks(85,118);
+		lowerArmTicks(1700);
+		lowerIntakeSeconds(2);
+		backwardSeconds(.3);
+		*/
 
 		//Onto Post
 		///*
-		forwardTicks(130,50);
-		raiseIntake();//Pick up cube
-		forwardTicks(300,50);
-		fancyTurnRightDegrees(30,false,50);
-		backwardTicks(100,50);
-		wait(.3);
-		raiseArmTicks(2700);
-		wait(.3);
-		forwardTicks(65,50);
-		wait(.3);
-		//lowerArmSeconds(.1);
-		lowerIntakeSeconds(2);
+		turnRightDegrees(60);
 		backwardTicks(100);
+		turnRightDegrees(30);
+		backwardTicks(200);
+		raiseArmTicks(2950);
+		forwardTicks(310);
+		lowerArmSeconds(.2);
+		lowerIntakeSeconds(1.5);
+		backwardSeconds(.4);
 		//*/
 	}
 
 
-	//2222222222222222222222222262222222222222222222222222222222222222222222222
+	//2222222222222222222222222222222222222222222222222222222222222222222222222
 	//Blue side skyrise
 	else if (position>=secondPos&&position<thirdPos)
 	{
@@ -111,13 +149,13 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		lowerIntakeSeconds(.5);
 		fancyTurnRightDegrees(25,false,50);
 		raiseArmTicks(skyriseHeight);
-		fancyTurnLeftDegrees(31,true,50);
+		fancyTurnLeftDegrees(37,true,50);
 		lowerArmSeconds(1);
 		raiseArmTicks(2100);
 		fancyTurnLeftDegrees(40,false,50);
-		fancyTurnRightDegrees(37,true,50);
-		forwardTicks(2,50);
-		lowerArmSeconds(1.5);
+		fancyTurnRightDegrees(39,true,50);
+		forwardTicks(7,50);
+		lowerArmSeconds(1.2);
 		raiseArmTicks(skyriseHeight);
 		/*
 		fancyTurnLeftDegrees(39.3,false,60);
@@ -141,40 +179,40 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Red side cube
 	else if(position>=thirdPos&&position<fourthPos)
 	{
+		forwardTicks(130,118);
+		raiseIntakeSeconds(.8);
+		forwardTicks(50,118);
+		turnLeftDegrees(15);
+		backwardTicks(100,118);
+		turnLeftDegrees(10);
+		backwardTicks(100,118);
+		turnLeftDegrees(1.9,40);
+
 		//Onto skyrise
 		///*
-		//wait(1.1);
-		forwardTicks(10,50);
-		forwardTicks(130,118);
-		raiseIntake();//Pick up cube
-		forwardTicks(250,118);
-		turnLeftDegrees(35,50);
-		backwardTicks(210,50);
-		fancyTurnRightDegrees(52.5,false,50);
-		//backwardTicks(130,50);
-		raiseArmTicks(1850);
-		forwardTicks(1,50);
-		//lowerArmSeconds(.2);
+		wait(4);
+		backwardTicks(100,118);
+		wait(.5);
+		raiseArmTicks(skyriseHeight);
+		wait(.5);
+		forwardTicks(176,118);
+		lowerArmTicks(1650);
 		lowerIntakeSeconds(2);
-		wait(.3);
+		backwardSeconds(.3);
 		//*/
 
 		//Onto Post
 		/*
-		forwardTicks(130,50);
-		raiseIntake();//Pick up cube
-		forwardTicks(300,50);
-		fancyTurnLeftDegrees(30,false,50);
-		backwardTicks(100,50);
-		wait(.3);
-		raiseArmTicks(2700);
-		wait(.3);
-		forwardTicks(65,50);
-		wait(.3);
-		//lowerArmSeconds(.1);
-		lowerIntakeSeconds(2);
+		turnLeftDegrees(60);
 		backwardTicks(100);
-		//*/
+		turnLeftDegrees(67);
+		backwardTicks(200);
+		raiseArmTicks(2950);
+		forwardTicks(310);
+		lowerArmSeconds(.2);
+		lowerIntakeSeconds(1.5);
+		backwardSeconds(.4);
+		*/
 	}
 
 
@@ -182,34 +220,17 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Red side skyrise
 	else if(position>=fourthPos&&position<fifthPos)
 	{
-		turnLeftDegrees(15,50);
-		lowerIntakeSeconds(.5);
-		fancyTurnLeftDegrees(25,false,50);
-		raiseArmTicks(skyriseHeight);
-		fancyTurnRightDegrees(37,true,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(2100);
-		fancyTurnRightDegrees(44,false,50);
-		fancyTurnLeftDegrees(46,true,50);
-		forwardTicks(1,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(skyriseHeight);
-		fancyTurnLeftDegrees(30,false,100);
-		/*
-		fancyTurnRightDegrees(39.3,false,60);
-		raiseArmTicks(skyriseHeight);
-		forwardTicks(14,60);
-		fullStop(10,70);
-		wait1Msec(500);
-		lowerArmSeconds(1);
-		raiseArmSeconds(1);
-		backwardTicks(100,118);
-		turnLeftDegrees(53,40);
-		forwardTicks(48,60);
-		fullStop(10);
-		lowerArmSeconds(3);
-		raiseArmTicks(1950);
-		*/
+	turnLeftDegrees(8,40);
+	backwardTicks(100,118);
+	raiseArmTicks(2000);
+	forwardTicks(120,118);
+	lowerArmSeconds(1);
+	raiseArmTicks(2400);
+	backwardTicks(100,118);
+	turnLeftDegrees(40,80);
+	forwardTicks(18,118);
+	lowerArmSeconds(1.8);
+	raiseArmSeconds(1);
 	}
 
 
@@ -217,24 +238,16 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	//Raise arm up
 	else if(position>=fifthPos)
 	{
-
-	//Trigger the pneuamtic a lot.
-		for (int i;i<1000;i++)
-		{
-			if (SensorValue[pnsky]==0)
-			{
-				SensorValue[pnsky]=1;
-				wait(.01);
-			}
-			else if (SensorValue[pnsky]==1)
-			{
-				SensorValue[pnsky]=0;
-				wait(.01 );
-			}
-		}
-
-
-}
+		//forwardTicks(100,118);
+		//testing arms
+		/*
+		motor[leftArm]=118;
+		motor[rightArm]=118;
+		wait(.5);
+		motor[leftArm]=0;
+		motor[rightArm]=0;
+		*/
+	}
 }
 
 

@@ -3,10 +3,9 @@
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  encoderRight,   sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  encoderLeft,    sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  armUltra,       sensorSONAR_cm)
-#pragma config(Sensor, dgtl7,  intakeLimit,    sensorTouch)
-#pragma config(Sensor, dgtl8,  pnr,            sensorDigitalIn)
-#pragma config(Sensor, dgtl9,  pnl,            sensorDigitalIn)
+#pragma config(Sensor, dgtl5,  pnsky,          sensorDigitalOut)
+#pragma config(Sensor, dgtl6,  armultra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl8,  intakeLimit,    sensorTouch)
 #pragma config(Motor,  port2,           FR,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           BR,            tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           BL,            tmotorVex393_MC29, openLoop, reversed)
@@ -72,250 +71,184 @@ void pre_auton()
 task autonomous(){  //Programs are chosen by the value of the dial potentiometer.
 		//DO NOT COPY THE TOP!!!
 
-	int position=fifthPos; //SensorValue[dial];
+	int position=SensorValue[dial];
 	SensorValue(encoderLeft)=0;
-	//startTask(armcontrol);
-	SensorType[in3]=sensorNone;
-	SensorType[in3]=sensorGyro;
 	//11111111111111111111111111111111111111111111111111111111111111111111111111
 	//Blue side block || Put block on post turn around grab two and put them somewhere
-		if (position>=firstPos&&position<secondPos)
+	if (position>=firstPos&&position<secondPos)
+	{
+		//Onto skyrise
+		/*
+		//wait(1.1);
+		forwardTicks(10,50);
+		forwardTicks(130,118);
+		raiseIntake();//Pick up cube
+		forwardTicks(250,118);
+		turnRightDegrees(35,50);
+		backwardTicks(210,50);
+		fancyTurnLeftDegrees(52.5,false,50);
+		//backwardTicks(130,50);
+		raiseArmTicks(1850);
+		forwardTicks(1,50);
+		//lowerArmSeconds(.2);
+		lowerIntakeSeconds(2);
+		wait(.3);
+		//*/
+
+		//Onto Post
+		///*
+		forwardTicks(130,50);
+		raiseIntake();//Pick up cube
+		forwardTicks(300,50);
+		fancyTurnRightDegrees(30,false,50);
+		backwardTicks(100,50);
+		wait(.3);
+		raiseArmTicks(2700);
+		wait(.3);
+		forwardTicks(65,50);
+		wait(.3);
+		//lowerArmSeconds(.1);
+		lowerIntakeSeconds(2);
+		backwardTicks(100);
+		//*/
+	}
+
+
+	//2222222222222222222222222262222222222222222222222222222222222222222222222
+	//Blue side skyrise
+	else if (position>=secondPos&&position<thirdPos)
+	{
+
+		turnRightDegrees(15,50);
+		lowerIntakeSeconds(.5);
+		fancyTurnRightDegrees(25,false,50);
+		raiseArmTicks(skyriseHeight);
+		fancyTurnLeftDegrees(31,true,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(2100);
+		fancyTurnLeftDegrees(40,false,50);
+		fancyTurnRightDegrees(37,true,50);
+		forwardTicks(2,50);
+		lowerArmSeconds(1.5);
+		raiseArmTicks(skyriseHeight);
+		/*
+		fancyTurnLeftDegrees(39.3,false,60);
+		raiseArmTicks(skyriseHeight);
+		forwardTicks(14,60);
+		fullStop(10,70);
+		wait1Msec(500);
+		lowerArmSeconds(1);
+		raiseArmSeconds(1);
+		backwardTicks(100,118);
+		turnRightDegrees(53,40);
+		forwardTicks(48,60);
+		fullStop(10);
+		lowerArmSeconds(3);
+		raiseArmTicks(1950);
+		*/
+	}
+
+
+	//33333333333333333333333333333333333333333333333333333333333333333333333333
+	//Red side cube
+	else if(position>=thirdPos&&position<fourthPos)
+	{
+		//Onto skyrise
+		///*
+		//wait(1.1);
+		forwardTicks(10,50);
+		forwardTicks(130,118);
+		raiseIntake();//Pick up cube
+		forwardTicks(250,118);
+		turnLeftDegrees(35,50);
+		backwardTicks(210,50);
+		fancyTurnRightDegrees(52.5,false,50);
+		//backwardTicks(130,50);
+		raiseArmTicks(1850);
+		forwardTicks(1,50);
+		//lowerArmSeconds(.2);
+		lowerIntakeSeconds(2);
+		wait(.3);
+		//*/
+
+		//Onto Post
+		/*
+		forwardTicks(130,50);
+		raiseIntake();//Pick up cube
+		forwardTicks(300,50);
+		fancyTurnLeftDegrees(30,false,50);
+		backwardTicks(100,50);
+		wait(.3);
+		raiseArmTicks(2700);
+		wait(.3);
+		forwardTicks(65,50);
+		wait(.3);
+		//lowerArmSeconds(.1);
+		lowerIntakeSeconds(2);
+		backwardTicks(100);
+		//*/
+	}
+
+
+	//444444444444444444444444444444444444444444444444444444444444444444444444444
+	//Red side skyrise
+	else if(position>=fourthPos&&position<fifthPos)
+	{
+		turnLeftDegrees(15,50);
+		lowerIntakeSeconds(.5);
+		fancyTurnLeftDegrees(25,false,50);
+		raiseArmTicks(skyriseHeight);
+		fancyTurnRightDegrees(37,true,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(2100);
+		fancyTurnRightDegrees(44,false,50);
+		fancyTurnLeftDegrees(46,true,50);
+		forwardTicks(1,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(skyriseHeight);
+		fancyTurnLeftDegrees(30,false,100);
+		/*
+		fancyTurnRightDegrees(39.3,false,60);
+		raiseArmTicks(skyriseHeight);
+		forwardTicks(14,60);
+		fullStop(10,70);
+		wait1Msec(500);
+		lowerArmSeconds(1);
+		raiseArmSeconds(1);
+		backwardTicks(100,118);
+		turnLeftDegrees(53,40);
+		forwardTicks(48,60);
+		fullStop(10);
+		lowerArmSeconds(3);
+		raiseArmTicks(1950);
+		*/
+	}
+
+
+	//55555555555555555555555555555555555555555555555555555555555555
+	//Raise arm up
+	else if(position>=fifthPos)
+	{
+
+	//Trigger the pneuamtic a lot.
+		for (int i;i<1000;i++)
 		{
-			backwardSeconds(.33);
-			raiseArmSeconds(1);
-			lowerIntakeSeconds(1);//Drop Cube on post
-			backwardSeconds(.2);
-			lowerArmSeconds(1);
-			forwardSeconds(.1);
-			motor[FR]=118;
-			motor[BR]=118;
-			wait1Msec(.4*1000);
-			clearMotor();
-			turnLeftSeconds(.63);
-			forwardSeconds(.12);
-			motor[FR]=118;
-			motor[BR]=118;
-			wait1Msec(.1*1000);
-			clearMotor();
-			wait1Msec(.5*1000);
-			raiseIntakeSeconds(1.3); //pick up cube on crosshair
-			backwardSeconds(.3);
-			turnLeftSeconds(.18);
-			forwardSeconds(.6);
-			wait1Msec(.5*1000);
-			raiseIntakeSeconds(1.2); //Pick up second cube
-
-
-			//To put on post
-			backwardSeconds(.7);
-			turnLeftSeconds(1.15);
-			backwardSeconds(.5);
-			raiseArmTicks(2500);
-			forwardSeconds(1.1);
-			lowerIntakeSeconds(.3);
-			forwardSeconds(.1);
-			lowerIntakeSeconds(2);
-
-
-			//To put on skyrise
-			/*backwardSeconds(.5);
-			turnRightSeconds(.6);
-			backwardSeconds(.4);
-			turnRightSeconds(.2);
-			raiseArmTicks(1800);
-			lowerIntakeSeconds(5);
-			*/
+			if (SensorValue[pnsky]==0)
+			{
+				SensorValue[pnsky]=1;
+				wait(.01);
+			}
+			else if (SensorValue[pnsky]==1)
+			{
+				SensorValue[pnsky]=0;
+				wait(.01 );
+			}
 		}
 
 
-		//2222222222222222222222222222222222222222222222222222222222222222222222222
-		//Blue side skyrise
-		else if (position>=secondPos&&position<thirdPos)
-		{
-			turnRightSeconds(.13);
-
-			backwardSeconds(.6,90);
-			raiseArmTicks(1950);
-			forwardSeconds(.67,90);
-			lowerArmSeconds(.6);
-			raiseArmTicks(2300);
-			backwardSeconds(.4,90);
-
-			motor[BL]=60;
-			motor[FL]=60;
-			motor[BR]=-60;
-			motor[FR]=-60;
-			wait1Msec(.7*1000);
-			clearMotor();
-
-			forwardSeconds(.2,90);
-			lowerArmSeconds(1.5);
-			motor[BL]=45;
-			motor[FL]=45;
-			motor[BR]=45;
-			motor[FR]=45;
-			motor[leftArm]=118;
-			motor[rightArm]=118;
-			wait1Msec(.3*1000);
-			clearMotor();
-			raiseArmSeconds(1);
-			//backwardSeconds(.15,90);//end of first cube
-
-
-			motor[BL]=-100;
-			motor[FL]=-100;
-			wait1Msec(.5*1000);
-			motor[BL]=-100;
-			motor[FL]=-100;
-			motor[BR]=100;
-			motor[FR]=100;
-			wait1Msec(.15*1000);
-			clearMotor();
-
-			/*
-			wait(.2);
-			forwardSeconds(.2,90);
-			lowerArmSeconds(1);
-			raiseArmTicks(2300);
-			motor[BR]=-100;
-			motor[FR]=-100;
-			wait(.75);
-			motor[BL]=100;
-			motor[FL]=100;
-			wait(.2);
-			clearMotor();
-			forwardSeconds(.25);
-			lowerArmSeconds(1);
-			raiseArmSeconds(1);
-			*/
-		}
-
-
-		//33333333333333333333333333333333333333333333333333333333333333333333333333
-		//Red side cube
-		else if(position>=thirdPos&&position<fourthPos)
-		{
-			backwardSeconds(.33);
-			raiseArmSeconds(1);
-			lowerIntakeSeconds(1);//Drop Cube on post
-			backwardSeconds(.2);
-			lowerArmSeconds(1);
-			forwardSeconds(.1);
-			motor[FL]=118;
-			motor[BL]=118;
-			wait1Msec(.4*1000);
-			clearMotor();
-			turnRightSeconds(.63);
-			forwardSeconds(.12);
-			motor[FL]=118;
-			motor[BL]=118;
-			wait1Msec(.1*1000);
-			clearMotor();
-			wait1Msec(.5*1000);
-			raiseIntakeSeconds(1.3); //pick up cube on crosshair
-			backwardSeconds(.3);
-			turnRightSeconds(.18);
-			forwardSeconds(.6);
-			wait1Msec(.5*1000);
-			raiseIntakeSeconds(1.2); //Pick up second cube
-
-
-			//To put on post
-			backwardSeconds(.7);
-			turnRightSeconds(1.15);
-			backwardSeconds(.5);
-			raiseArmTicks(2500);
-			forwardSeconds(1.1);
-			lowerIntakeSeconds(.3);
-			forwardSeconds(.1);
-			lowerIntakeSeconds(2);
-
-
-			//To put on skyrise
-			/*backwardSeconds(.5);
-			turnRightSeconds(.6);
-			backwardSeconds(.4);
-			turnRightSeconds(.2);
-			raiseArmTicks(1800);
-			lowerIntakeSeconds(5);
-			*/
-		}
-
-
-		//444444444444444444444444444444444444444444444444444444444444444444444444444
-		//Red side skyrise
-		else if(position>=fourthPos&&position<fifthPos)
-		{
-			turnLeftSeconds(.13);
-			turnRightSeconds(.1);
-			backwardSeconds(.6,90);
-			raiseArmTicks(1950);
-			forwardSeconds(.62,90);
-			lowerArmSeconds(.6);
-			raiseArmTicks(2300);
-			backwardSeconds(1,90);
-
-			motor[BL]=-60;
-			motor[FL]=-60;
-			motor[BR]=60;
-			motor[FR]=60;
-			wait1Msec(.5*1000);
-			clearMotor();
-
-			forwardSeconds(.45,90);
-			lowerArmSeconds(1.5);
-			motor[BL]=-45;
-			motor[FL]=-45;
-			//motor[BR]=45;
-			//motor[FR]=45;
-			motor[leftArm]=118;
-			motor[rightArm]=118;
-			wait1Msec(.3*1000);
-			clearMotor();
-			motor[BL]=-45;
-			motor[FL]=-45;
-			wait1Msec(.5*1000);
-			backwardSeconds(.2);
-			raiseArmSeconds(1);
-			//backwardSeconds(.15,90);//end of first cube
-
-
-			motor[BR]=-100;
-			motor[FR]=-100;
-			wait1Msec(.5*1000);
-			motor[BL]=100;
-			motor[FL]=100;
-			motor[BR]=-100;
-			motor[FR]=-100;
-			wait1Msec(.15*1000);
-			clearMotor();
-
-			/*
-			wait(.2);
-			forwardSeconds(.2,90);
-			lowerArmSeconds(1);
-			raiseArmTicks(2300);
-			motor[BL]=-100;
-			motor[FL]=-100;
-			wait(.75);
-			motor[BR]=100;
-			motor[FR]=100;
-			wait(.2);
-			clearMotor();
-			forwardSeconds(.25);
-			lowerArmSeconds(1);
-			raiseArmSeconds(1);
-			*/
-		}
-
-
-		//55555555555555555555555555555555555555555555555555555555555555
-		//Raise arm up
-		else if(position>=fifthPos){
-
-			turnLeftDegrees(90,127);
-		}
 }
+}
+
 
 
 
@@ -379,13 +312,11 @@ task usercontrol(){
 	    // Now do something with our toggle flag
 	    if( buttonToggleState8r )
 	    {
-	      SensorValue[pnr]=1;
-	      SensorValue[pnl]=1;
+	      SensorValue[pnsky]=1;
 	    }
 	    else
 	    {
-	      SensorValue[pnr]=0;
-	      SensorValue[pnl]=0;
+	      SensorValue[pnsky]=0;
 		  }
 
 
