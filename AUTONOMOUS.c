@@ -66,25 +66,25 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 	if (position>=firstPos&&position<secondPos)
 	{
 		//Onto skyrise
-		/*
-		//wait(1.1);
-		forwardTicks(10,50);
-		forwardTicks(130,118);
+		///*
+		wait(2.6);
+		forwardTicks(75,50);
 		raiseIntake();//Pick up cube
 		forwardTicks(250,118);
 		turnRightDegrees(35,50);
 		backwardTicks(210,50);
-		fancyTurnLeftDegrees(52.5,false,50);
-		//backwardTicks(130,50);
-		raiseArmTicks(1850);
-		forwardTicks(1,50);
+		fancyTurnLeftDegrees(42,false,50);
+		backwardTicks(50,50);
+		wait(3);
+		raiseArmTicks(1800);
+		forwardTicks(116,50);
 		//lowerArmSeconds(.2);
 		lowerIntakeSeconds(2);
 		wait(.3);
 		//*/
 
 		//Onto Post
-		///*
+		/*
 		forwardTicks(130,50);
 		raiseIntake();//Pick up cube
 		forwardTicks(300,50);
@@ -93,7 +93,7 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		wait(.3);
 		raiseArmTicks(2700);
 		wait(.3);
-		forwardTicks(65,50);
+		forwardTicks(10,50);
 		wait(.3);
 		//lowerArmSeconds(.1);
 		lowerIntakeSeconds(2);
@@ -109,15 +109,18 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 
 		turnRightDegrees(15,50);
 		lowerIntakeSeconds(.5);
-		fancyTurnRightDegrees(25,false,50);
+		fancyTurnRightDegrees(22,false,50);
 		raiseArmTicks(skyriseHeight);
-		fancyTurnLeftDegrees(31,true,50);
+		fancyTurnLeftDegrees(50,true,50);
+		backwardTicks(1,30);
+		wait(.3);
 		lowerArmSeconds(1);
 		raiseArmTicks(2100);
 		fancyTurnLeftDegrees(40,false,50);
-		fancyTurnRightDegrees(37,true,50);
-		forwardTicks(2,50);
-		lowerArmSeconds(1.5);
+		fancyTurnRightDegrees(45,true,50);
+		fancyTurnLeftDegrees(8,false,50);
+		//forwardTicks(2,50);
+		lowerArmSeconds(2);
 		raiseArmTicks(skyriseHeight);
 		/*
 		fancyTurnLeftDegrees(39.3,false,60);
@@ -145,12 +148,12 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		///*
 		//wait(1.1);
 		forwardTicks(10,50);
-		forwardTicks(130,118);
+		forwardTicks(30,118);
 		raiseIntake();//Pick up cube
 		forwardTicks(250,118);
 		turnLeftDegrees(35,50);
 		backwardTicks(210,50);
-		fancyTurnRightDegrees(52.5,false,50);
+		fancyTurnRightDegrees(46.5,false,50);
 		//backwardTicks(130,50);
 		raiseArmTicks(1850);
 		forwardTicks(1,50);
@@ -186,14 +189,25 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 		lowerIntakeSeconds(.5);
 		fancyTurnLeftDegrees(25,false,50);
 		raiseArmTicks(skyriseHeight);
-		fancyTurnRightDegrees(37,true,50);
+		fancyTurnRightDegrees(46,true,50);
+		backwardTicks(2,50);
+		wait(.3);
 		lowerArmSeconds(1);
 		raiseArmTicks(2100);
 		fancyTurnRightDegrees(44,false,50);
-		fancyTurnLeftDegrees(46,true,50);
-		forwardTicks(1,50);
+		fancyTurnLeftDegrees(54,true,50);
+		//forwardTicks(1,50);
 		lowerArmSeconds(1);
 		raiseArmTicks(skyriseHeight);
+		/*turnRightDegrees(1,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(skyriseHeight);
+		turnLeftDegrees(1,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(skyriseHeight);
+		turnLeftDegrees(1,50);
+		lowerArmSeconds(1);
+		raiseArmTicks(skyriseHeight);*/
 		fancyTurnLeftDegrees(30,false,100);
 		/*
 		fancyTurnRightDegrees(39.3,false,60);
