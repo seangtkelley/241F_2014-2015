@@ -801,108 +801,6 @@ void lowerArmSeconds(float seconds, float x=118)
 	motor[rightArm]= 0;
 }
 
-/**
-* @void raiseIntake
-*
-* @desc raises intake to highest point
-*
-* @args  N/A
-*/
-void raiseIntake()
-{
-	while(SensorValue[intakeLimit] !=1)
-	{
-		motor[leftintake]=118;
-		motor[rightintake]=118;
-	}
-	wait(.1);
-	motor[leftintake]=-10;
-	motor[rightintake]=-10;
-	wait(.2);
-	motor[leftintake]=0;
-	motor[rightintake]=0;
-}
-
-
-/**
-* @void lowerIntake
-*
-* @desc lowers intake to lowest point
-*
-* @args  N/A
-*/
-
-void lowerIntake()
-{
-	while(SensorValue[intakeLimit] !=1)
-	{
-		motor[leftintake]=-118;
-		motor[rightintake]=-118;
-	}
-}
-
-/**
-* @void raiseIntakeSeconds
-*
-* @desc raises intake a given amount of seconds
-*
-* @args  s   int    amount of seconds to raise intake
-*/
-void raiseIntakeSeconds(float s)
-{
-	motor[leftintake]=118;
-	motor[rightintake]=118;
-	wait1Msec(s*1000);
-	motor[leftintake]=0;
-	motor[rightintake]=0;
-}
-
-/**
-* @void lowerIntakeSeconds
-*
-* @desc lowers intake a given amount of seconds
-*
-* @args  s   int    amount of seconds to lower intake
-*/
-void lowerIntakeSeconds(float s)
-{
-	motor[leftintake]=-118;
-	motor[rightintake]=-118;
-	wait1Msec(s*1000);
-	motor[leftintake]=0;
-	motor[rightintake]=0;
-}
-
-
-/**
-* @task printGyroToLCD
-*
-* @desc prints gyro value to LCD scree
-*
-* @args N/A
-*/
-task printGyroToLCD(){
-	bLCDBacklight = true;
-	clearLCDLine(0);
-	clearLCDLine(1);
-
-	int theta = SensorValue[gyro];
-	string angle;
-
-	while (true){
-		clearLCDLine(0);
-		clearLCDLine(1);
-
-		theta = SensorValue[gyro];
-
-		sprintf(angle, "%d", theta);
-
-		displayNextLCDString(angle);
-
-		wait1Msec(100);
-	}
-}
-
 
 /**
 * @task armcontrol
@@ -914,53 +812,22 @@ task printGyroToLCD(){
 */
 
 
-/*
-task armcontrol(float target)
+task armcontrol()
 {
-	// 1563:
-	//float target = 1563; //pot val at scoring height pos0
-	float pGain = .3;
-	float iGain = .2;
-	float error = target-SensorValue[armp];
-	float errorSum=0;
-
-	while(true)
+	while (true)
 	{
-		error=target-SensorValue[armp];
-		errorSum+=error;
-		motor[leftArm]= error*pGain+errorSum*iGain;
-		motor[rightArm]= error*pGain+errorSum*iGain;
+		int constant=.85;
+		float proportion= SensorValue[armp]/target;
+		float error=target-SensorValue[armp];
+		if(error<0)
+		{
+			motor[leftArm]= -118*(exp( proportion * log(constant))) ;
+			motor[rightArm]= -118*(exp( proportion * log(constant)));
+		}
+		else
+		{
+			motor[leftArm]= 118*(exp( proportion * log(constant)));
+			motor[rightArm]= 118*(exp( proportion * log(constant)));
+		}
 	}
 }
-*/
-
-
-/**
-* ###### NOT FINISHED ######
-* @void retrieve
-*
-* @desc gets skyrise
-*
-*
-* @args  N/A
-*/
-/*
-void retrieve()
-{
-	float distanceFromSkyrise=12; //THE NUMBER OF CENTIMETERS THE ULTRASONIC MUST BE TO LOWER THE ARM AND BE ON TARGET
-	raiseArmTicks(1950);
-	while(SensorValue[armUltra]>30){
-		motor[FL]=-80;
-		motor[BL]=-80;
-		motor[FR]=80;
-		motor[FR]=80;
-	}
-	turnRightSeconds(.04,80);
-	//float distanceFromCenter=sqrt(SensorValue[armUltra]^2+3.5^2);
-	float turn=asin(3.5/SensorValue[armUltra]);
-	turnLeftDegrees(turn);
-	float temp=SensorValue[armUltra];
-	float distanceForward=temp-distanceFromSkyrise;
-	forwardTicks(distanceForward);//The number of ticks in
-}
-*/

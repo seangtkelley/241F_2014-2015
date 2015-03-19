@@ -77,40 +77,6 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 	//Blue side block || Put block on post turn around grab two and put them somewhere
 	if (position>=firstPos&&position<secondPos)
 	{
-		//Onto skyrise
-		/*
-		wait(2.6);
-		forwardTicks(75,50);
-		raiseIntake();//Pick up cube
-		forwardTicks(250,118);
-		turnRightDegrees(35,50);
-		backwardTicks(210,50);
-		fancyTurnLeftDegrees(42,false,50);
-		backwardTicks(50,50);
-		wait(3);
-		raiseArmTicks(1800);
-		forwardTicks(116,50);
-		//lowerArmSeconds(.2);
-		lowerIntakeSeconds(2);
-		wait(.3);
-		//*/
-
-		//Onto Post
-		///*
-		forwardTicks(130,50);
-		raiseIntake();//Pick up cube
-		forwardTicks(300,50);
-		fancyTurnRightDegrees(30,false,50);
-		backwardTicks(100,50);
-		wait(.3);
-		raiseArmTicks(2700);
-		wait(.3);
-		forwardTicks(18,50);
-		wait(.3);
-		//lowerArmSeconds(.1);
-		lowerIntakeSeconds(2);
-		backwardTicks(100);
-		//*/
 	}
 
 
@@ -118,37 +84,6 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 	//Blue side skyrise
 	else if (position>=secondPos&&position<thirdPos)
 	{
-
-		turnRightDegrees(15,50);
-		lowerIntakeSeconds(.5);
-		fancyTurnRightDegrees(22,false,50);
-		raiseArmTicks(skyriseHeight);
-		fancyTurnLeftDegrees(50,true,50);
-		backwardTicks(1,30);
-		wait(.3);
-		lowerArmSeconds(1);
-		raiseArmTicks(2100);
-		fancyTurnLeftDegrees(40,false,50);
-		fancyTurnRightDegrees(45,true,50);
-		fancyTurnLeftDegrees(8,false,50);
-		//forwardTicks(2,50);
-		lowerArmSeconds(2);
-		raiseArmTicks(skyriseHeight);
-		/*
-		fancyTurnLeftDegrees(39.3,false,60);
-		raiseArmTicks(skyriseHeight);
-		forwardTicks(14,60);
-		fullStop(10,70);
-		wait1Msec(500);
-		lowerArmSeconds(1);
-		raiseArmSeconds(1);
-		backwardTicks(100,118);
-		turnRightDegrees(53,40);
-		forwardTicks(48,60);
-		fullStop(10);
-		lowerArmSeconds(3);
-		raiseArmTicks(1950);
-		*/
 	}
 
 
@@ -156,40 +91,6 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 	//Red side cube
 	else if(position>=thirdPos&&position<fourthPos)
 	{
-		//Onto skyrise
-		///*
-		//wait(1.1);
-		forwardTicks(10,50);
-		forwardTicks(30,118);
-		raiseIntake();//Pick up cube
-		forwardTicks(250,118);
-		turnLeftDegrees(35,50);
-		backwardTicks(210,50);
-		fancyTurnRightDegrees(46.5,false,50);
-		//backwardTicks(130,50);
-		raiseArmTicks(1850);
-		forwardTicks(1,50);
-		//lowerArmSeconds(.2);
-		lowerIntakeSeconds(2);
-		wait(.3);
-		//*/
-
-		//Onto Post
-		/*
-		forwardTicks(130,50);
-		raiseIntake();//Pick up cube
-		forwardTicks(300,50);
-		fancyTurnLeftDegrees(30,false,50);
-		backwardTicks(100,50);
-		wait(.3);
-		raiseArmTicks(2700);
-		wait(.3);
-		forwardTicks(65,50);
-		wait(.3);
-		//lowerArmSeconds(.1);
-		lowerIntakeSeconds(2);
-		backwardTicks(100);
-		//*/
 	}
 
 
@@ -197,45 +98,6 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 	//Red side skyrise
 	else if(position>=fourthPos&&position<fifthPos)
 	{
-		turnLeftDegrees(15,50);
-		lowerIntakeSeconds(.5);
-		fancyTurnLeftDegrees(25,false,50);
-		raiseArmTicks(skyriseHeight);
-		fancyTurnRightDegrees(46,true,50);
-		backwardTicks(2,50);
-		wait(.3);
-		lowerArmSeconds(1);
-		raiseArmTicks(2100);
-		fancyTurnRightDegrees(44,false,50);
-		fancyTurnLeftDegrees(54,true,50);
-		//forwardTicks(1,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(skyriseHeight);
-		/*turnRightDegrees(1,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(skyriseHeight);
-		turnLeftDegrees(1,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(skyriseHeight);
-		turnLeftDegrees(1,50);
-		lowerArmSeconds(1);
-		raiseArmTicks(skyriseHeight);*/
-		fancyTurnLeftDegrees(30,false,100);
-		/*
-		fancyTurnRightDegrees(39.3,false,60);
-		raiseArmTicks(skyriseHeight);
-		forwardTicks(14,60);
-		fullStop(10,70);
-		wait1Msec(500);
-		lowerArmSeconds(1);
-		raiseArmSeconds(1);
-		backwardTicks(100,118);
-		turnLeftDegrees(53,40);
-		forwardTicks(48,60);
-		fullStop(10);
-		lowerArmSeconds(3);
-		raiseArmTicks(1950);
-		*/
 	}
 
 
@@ -243,24 +105,7 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 	//Raise arm up
 	else if(position>=fifthPos)
 	{
-
-	//Trigger the pneuamtic a lot.
-		for (int i;i<1000;i++)
-		{
-			if (SensorValue[pnsky]==0)
-			{
-				SensorValue[pnsky]=1;
-				wait(.01);
-			}
-			else if (SensorValue[pnsky]==1)
-			{
-				SensorValue[pnsky]=0;
-				wait(.01 );
-			}
-		}
-
-
-}
+	}
 }
 
 
