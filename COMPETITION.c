@@ -186,41 +186,34 @@ task usercontrol(){
 				//give drive direct control.
 				motor[BR] = vexRT[Ch2];
 				motor[FR] = vexRT[Ch2];
+				motor[MR] = vexRT[Ch2];
 				motor[BL] = vexRT[Ch3];
 				motor[FL] = vexRT[Ch3];
+				motor[ML] = vexRT[Ch3];
 			} else if(half ==true) {
 				//give drive control but all motor maxes are a third of their orignal max.
 				motor[BR] = vexRT[Ch2]/3;
 				motor[FR] = vexRT[Ch2]/3;
+				motor[MR] = vexRT[Ch2]/3;
 				motor[BL] = vexRT[Ch3]/3;
 				motor[FL] = vexRT[Ch3]/3;
+				motor[ML] = vexRT[Ch3]/3;
 			}
 
 
 	  	//ARM MOTION----------------------------
-			if(vexRT[Btn5D] == true){
-      	/*if(nMotorEncoder(rightArm) > nMotorEncoder(leftArm)){
-        	motor[rightArm] = 127/2;
-        	motor[leftArm] = 127;
-      	}else if(nMotorEncoder(rightArm) < nMotorEncoder(leftArm)){
-        	motor[rightArm] = 127;
-        	motor[leftArm] = 127/2;
-      	}else{*/
+			if(vexRT[Btn5D] == true)
+			{
         	motor[rightArm] = -126;
         	motor[leftArm] = -126;
-      	//}
-    	}else if(vexRT[Btn6D] == true){
-      	/*if(nMotorEncoder(rightArm) > nMotorEncoder(leftArm)){
-        	motor[rightArm] = -10;
-        	motor[leftArm] = -20;
-      	}else if(nMotorEncoder(rightArm) < nMotorEncoder(leftArm)){
-        	motor[rightArm] = -20;
-        	motor[leftArm] = -10;
-      	}else{*/
+    	}
+    	else if(vexRT[Btn6D] == true)
+    	{
         	motor[rightArm] = 126;
         	motor[leftArm] = 126;
-      	//}
-    	}else{
+    	}
+    	else
+    	{
       	motor[rightArm] = 0;
       	motor[leftArm] = 0;
     	}
