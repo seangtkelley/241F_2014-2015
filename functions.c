@@ -1,7 +1,9 @@
 #pragma config(Sensor, in1,    armp,           sensorPotentiometer)
 #pragma config(Sensor, in2,    dial,           sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
-#pragma config(Sensor, in4,    acc,            sensorAccelerometer)
+#pragma config(Sensor, in4,    xAxis,          sensorAccelerometer)
+#pragma config(Sensor, in5,    yAxis,          sensorAccelerometer)
+#pragma config(Sensor, in6,    zAxis,          sensorAccelerometer)
 #pragma config(Sensor, dgtl1,  pnintake,       sensorDigitalOut)
 #pragma config(Sensor, dgtl2,  pnsky,          sensorDigitalOut)
 #pragma config(Motor,  port2,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
@@ -24,35 +26,57 @@
 //
 //                                    INDEX
 //
-//  drive:--------------Gives drive control to vexnet controller.
-//  clearMotor:---------Sets motor values to 0.
-//  fullStop:-----------Completely stops all motors without drift.
-//  forwardTicks:-------Moves bot forward a given tick amount.
-//  backwardTicks:------Moves bot backwards a given amount of ticks.
-//  forwardSeconds:-----Moves bot forward a given amount of seconds.
-//  backwardSeconds:----Moves bot backwards a given amount of seconds.
-//  turnRightDegrees:---Turn bot right a certain amount of degrees.
-//  turnLeftDegrees:----Turn bot left a certain amount of degrees.
-//  turnRightTicks:-----Turn bot right a certain amount of ticks.
-//  turnLeftTicks:------Turn bot left a certain amount of ticks.
-//  turnRightSeconds:---Turn bot right a certain amount of seconds.
-//  turnLeftSeconds:----Turn bot left a certain amount of seconds.
-//  raiseArmTicks:------Raises arm a given amount of ticks.
-//  lowerArmTicks:------Lowers arm a given amount of ticks.
-//  raiseArmSeconds:----Raises arm a given amount of seconds.
-//  lowerArmSeconds:----Lowers arm a given amount of seconds.
+//  drive:------------------Gives drive control to vexnet controller.
+//  clearMotor:-------------Sets motor values to 0.
+//  motorcheck:-------------Run each motor individually to test if they are working.
+//  fullStop:---------------Completely stops all motors without drift.
+//  forwardSeconds:---------Moves bot forward a given amount of seconds.
+//  backwardSeconds:--------Moves bot backwards a given amount of seconds.
+//  *lockLeftSide:----------PID stops left side of drivetrain from moving.
+//  *lockRightSide:---------PID stops right side of drivetrain from moving.
+//  fancyTurnRightDegrees:--Turns bot with only left side of drivetrain.
+//  fancyTurnLeftDegrees:---Turns bot with only right side of drivetrain.
+//  turnRightDegrees:-------Turn bot right a certain amount of degrees.
+//  turnLeftDegrees:--------Turn bot left a certain amount of degrees.
+//  turnRightSeconds:-------Turn bot right a certain amount of seconds.
+//  turnLeftSeconds:--------Turn bot left a certain amount of seconds.
+//  raiseArmTicks:----------Raises arm a given amount of ticks.
+//  lowerArmTicks:----------Lowers arm a given amount of ticks.
+//  raiseArmSeconds:--------Raises arm a given amount of seconds.
+//  lowerArmSeconds:--------Lowers arm a given amount of seconds.
+//  opensky:----------------Open skyrise intake.
+//  closesky:---------------Close skyrise intake.
+//  openintake:-------------Open cube intake.
+//  closeintake:------------Close cube intake.
+//  Armcontrol:-------------Keeps arm at a constant height.
+//  println:----------------Print a line of output to the LCD screen.
+//  *yPosition:-------------Gather y position information from accelerometer
 //
-//  WORKS IN PROGRESS
-//
-//  Armcontrol:---------Keeps arm at a constant height.
+//  * WORKS IN PROGRESS
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// Global variables
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 GLOBAL VARIABLES
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// last console string
 string consoleCache = "";
-float pos = 0;
-float vel = 0;
-float accel = 0;
+
+// positioning values
+float accelRatio = 0;
+float yPos = 0;
+float yVel = 0;
+float yAccel = 0;
+float posAt1MSec = 0;
+float errorFactor = 1.1667;
+
+int zYDif = 0;
+int originalY = 0;
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -605,11 +629,11 @@ void raiseArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]<ticks)
 	{
-		motor[leftarm]=x;
-		motor[rightarm]=x;
+		motor[leftArm]=x;
+		motor[rightArm]=x;
 	}
-	motor[leftarm]=0;
-	motor[rightarm]=0;
+	motor[leftArm]=0;
+	motor[rightArm]=0;
 }
 
 /**
@@ -624,11 +648,11 @@ void lowerArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]>ticks)
 	{
-		motor[leftarm]=-x;
-		motor[rightarm]=-x;
+		motor[leftArm]=-x;
+		motor[rightArm]=-x;
 	}
-	motor[leftarm]=0;
-	motor[rightarm]=0;
+	motor[leftArm]=0;
+	motor[rightArm]=0;
 }
 
 /**
@@ -641,11 +665,11 @@ void lowerArmTicks(int ticks,float x=118)
 */
 void raiseArmSeconds(float s, float x=118)
 {
-	motor[leftarm]=x;
-	motor[rightarm]=x;
+	motor[leftArm]=x;
+	motor[rightArm]=x;
 	wait1Msec(s*1000);
-	motor[leftarm]=0;
-	motor[rightarm]=0;
+	motor[leftArm]=0;
+	motor[rightArm]=0;
 }
 
 
@@ -659,40 +683,13 @@ void raiseArmSeconds(float s, float x=118)
 */
 void lowerArmSeconds(float seconds, float x=118)
 {
-  motor[leftarm]= -x;
-	motor[rightarm]= -x;
+  motor[leftArm]= -x;
+	motor[rightArm]= -x;
 	wait1Msec(seconds*1000);
-	motor[leftarm]= 0;
-	motor[rightarm]= 0;
+	motor[leftArm]= 0;
+	motor[rightArm]= 0;
 }
 
-/**
-* @void opencube
-*
-* @desc opens cube intake
-*
-* @args  NONE
-*
-*/
-
-void opencube()
-{
-	SensorValue[pnintake]=1;
-}
-
-/**
-* @void closecube
-*
-* @desc closes cube intake
-*
-* @args  NONE
-*
-*/
-
-void closecube()
-{
-	SensorValue[pnintake]=0;
-}
 
 /**
 * @void opensky
@@ -779,6 +776,8 @@ task armcontroller()
 	}
 }
 */
+
+
 /**
 * @void println
 *
@@ -806,25 +805,19 @@ void println(string str)
 *
 * @args NONE
 */
-/*task updatePos()
-{
-	float accelRatio = 0;
-	float yPos = 0;
-	float yVel = 0;
-	float yAccel = 0;
-	float posAt1MSec = 0;
-	float errorFactor = 1.1667;
 
-	int zYDif = 0;
-	int originalY = 0;
+task yPosition(){
 
-	task yPosition(){
-	  while(true){
-	    wait1Msec(1);//1 millisecond sampling time
-	    yAccel = (abs(SensorValue[yAxis] - originalY)) > 2 ? (SensorValue[yAxis] - originalY) / accelRatio : 0;
-	    //check if threshold is passed and set "instantanious" acceleration
-	    yVel += (yAccel / 1000);//update "instantainious" velocity
-	    yPos += (yVel / 1000);//update position
-	  }
-	}
-}*/
+	originalY = SensorValue[yAxis];//record the y axis value at start
+  zYDif = SensorValue[zAxis] - originalY;//find the difference between 0G and 1G
+  accelRatio = zYDif / 9.801;//find sensor value of 1m/s^2
+  posAt1MSec = yPos * errorFactor;//record yPos at 1 millisecond, and account for error
+
+  while(true){
+    wait1Msec(1);//1 millisecond sampling time
+    yAccel = (abs(SensorValue[yAxis] - originalY)) > 2 ? (SensorValue[yAxis] - originalY) / accelRatio : 0;
+    //check if threshold is passed and set "instantanious" acceleration
+    yVel += (yAccel / 1000);//update "instantainious" velocity
+    yPos += (yVel / 1000);//update position
+  }
+}
