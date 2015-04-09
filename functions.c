@@ -1,3 +1,4 @@
+#pragma config(UART_Usage, UART2, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(Sensor, in1,    armp,           sensorPotentiometer)
 #pragma config(Sensor, in2,    dial,           sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
@@ -6,11 +7,14 @@
 #pragma config(Sensor, in6,    zAxis,          sensorAccelerometer)
 #pragma config(Sensor, dgtl1,  pnintake,       sensorDigitalOut)
 #pragma config(Sensor, dgtl2,  pnsky,          sensorDigitalOut)
+#pragma config(Sensor, dgtl3,  skyUltra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl5,  rightUltra,     sensorNone)
+#pragma config(Sensor, dgtl7,  leftUltra,      sensorNone)
 #pragma config(Motor,  port2,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
-#pragma config(Motor,  port3,           ML,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port3,           leftAdd,       tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           FL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           BR,            tmotorVex393HighSpeed_MC29, openLoop)
-#pragma config(Motor,  port6,           MR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           rightAdd,      tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           FR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           rightArm,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           leftArm,       tmotorVex393_MC29, openLoop)
@@ -77,6 +81,17 @@ int zYDif = 0;
 int originalY = 0;
 
 
+// LCD screen values
+int lcdScreen = 0;
+int lcdScreenMax = 3;
+int lcdScreenMin = 0;
+string lcdConsole[2];
+bool consoleWritten = false;
+const short leftButton = 1;
+const short centerButton = 2;
+const short rightButton = 4;
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -122,10 +137,8 @@ void drive(bool half)
 void clearMotor()
 {
 	motor[FR]=0;
-	motor[MR]=0;
 	motor[BR]=0;
 	motor[FL]=0;
-	motor[ML]=0;
 	motor[BL]=0;
 }
 
@@ -141,16 +154,10 @@ void motorcheck()
 	motor[FR]=118;
 	wait(1.5);
 	clearMotor();
-	motor[MR]=118;
-	wait(1.5);
-	clearMotor();
 	motor[BR]=118;
 	wait(1.5);
 	clearMotor();
 	motor[FL]=118;
-	wait(1.5);
-	clearMotor();
-	motor[ML]=118;
 	wait(1.5);
 	clearMotor();
 	motor[BL]=118;
@@ -353,7 +360,7 @@ void fancyTurnRightDegrees(int degrees, bool forward=true, int x=80)
 		while(abs(SensorValue[gyro]) < degrees)
 		{
 			motor[FL] = x;
-		  motor[BL] = x;
+		    motor[BL] = x;
 		}
 		motor[FL] = -10;
 		motor[BL] = -10;
@@ -366,7 +373,7 @@ void fancyTurnRightDegrees(int degrees, bool forward=true, int x=80)
 		while(abs(SensorValue[gyro]) < degrees)
 		{
 			motor[FL] = -x;
-		  motor[BL] = -x;
+		    motor[BL] = -x;
 		}
 		motor[FL] = 10;
 	  motor[BL] = 10;
@@ -404,7 +411,7 @@ void fancyTurnLeftDegrees(int degrees, bool forward=true, int x=80)
 		while(abs(SensorValue[gyro]) < degrees)
 		{
 			motor[FR] = x;
-		  motor[BR] = x;
+		    motor[BR] = x;
 		}
 		motor[FR] = -10;
 		motor[BR] = -10;
@@ -417,7 +424,7 @@ void fancyTurnLeftDegrees(int degrees, bool forward=true, int x=80)
 		while(abs(SensorValue[gyro]) < degrees)
 		{
 			motor[FR] = -x;
-		  motor[BR] = -x;
+		    motor[BR] = -x;
 		}
 		motor[FR] = 10;
 		motor[BR] = 10;
@@ -463,20 +470,20 @@ void turnRightDegrees(float degree, float x=90)
     	motor[BL]=x;
     	motor[BR]=-x*.8;
 		} else {*/
-			motor[FL]=x;
-    	motor[FR]=-x;
-    	motor[BL]=x;
-    	motor[BR]=-x;
+			motor[FL] = x;
+        	motor[FR] = -x;
+        	motor[BL] = x;
+        	motor[BR] = -x;
 		//}
 	}
 	while(abs(SensorValue[gyro]) <degree)
 	{
 		if(x*.35<40)
 		{
-			motor[FL]=40;
-    	motor[FR]=-40;
-    	motor[BL]=40;
-    	motor[BR]=-40;
+			motor[FL] = 40;
+        	motor[FR] = -40;
+        	motor[BL] = 40;
+        	motor[BR] = -40;
 		}
 		else
 		{
@@ -491,16 +498,16 @@ void turnRightDegrees(float degree, float x=90)
 	    	motor[BL]=x*.4;
 	    	motor[BR]=-x*.4*.8;
 			} else {*/
-				motor[FL]=x*.35;
-	    	motor[FR]=-x*.35;
-	    	motor[BL]=x*.35;
-	    	motor[BR]=-x*.35;
+				motor[FL] = x*.35;
+    	    	motor[FR] = -x*.35;
+    	    	motor[BL] = x*.35;
+    	    	motor[BR] = -x*.35;
 			//}
     }
 	}
-  fullStop();
+  //fullStop();
+	clearMotor();
 }
-
 
 /**
 * @void turnLeftDegrees
@@ -532,20 +539,20 @@ void turnLeftDegrees(float degree, float x=90)
 	    	motor[BL]=-x;
 	    	motor[BR]=x*.8;
 			} else {*/
-				motor[FL]=-x;
-	    	motor[FR]=x;
-	    	motor[BL]=-x;
-	    	motor[BR]=x;
+				motor[FL] = -x;
+	    	    motor[FR] = x;
+	    	    motor[BL] = -x;
+	    	    motor[BR] = x;
 			//}
 	}
 	while(abs(SensorValue[gyro]) < degree)
 	{
 		if(x*.35<40)
 		{
-			motor[FL]=-40;
-    	motor[FR]=40;
-    	motor[BL]=-40;
-    	motor[BR]=40;
+			motor[FL] = -40;
+    	    motor[FR] = 40;
+    	    motor[BL] = -40;
+    	    motor[BR] = 40;
 		}
 		else
 		{
@@ -560,14 +567,15 @@ void turnLeftDegrees(float degree, float x=90)
 	    	motor[BL]=-x*.4;
 	    	motor[BR]=x*.4*.8;
 			} else {*/
-				motor[FL]=-x*.35;
-	    	motor[FR]=x*.35;
-	    	motor[BL]=-x*.35;
-	    	motor[BR]=x*.35;
+				motor[FL] = -x*.35;
+	    	    motor[FR] = x*.35;
+	    	    motor[BL] = -x*.35;
+	    	    motor[BR] = x*.35;
 			//}
     }
 	}
-  fullStop();
+  //fullStop();
+	clearMotor();
 }
 
 
@@ -599,10 +607,10 @@ void turnRightSeconds(float seconds, float x=118)
 */
 void turnLeftSeconds(float seconds, float x=118)
 {
-	motor[FL]=-x;
-	motor[BL]=-x;
-	motor[FR]=x;
-	motor[BR]=x;
+	motor[FL] = -x;
+	motor[BL] = -x;
+	motor[FR] = x;
+	motor[BR] = x;
 	wait1Msec(seconds*1000);
 	fullStop();
 }
@@ -629,11 +637,12 @@ void raiseArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]<ticks)
 	{
-		motor[leftArm]=x;
-		motor[rightArm]=x;
+		motor[leftArm]  = x;
+		motor[rightArm] = x;
+		motor[leftAdd]  = x;
+	    motor[rightAdd] = x;
 	}
-	motor[leftArm]=0;
-	motor[rightArm]=0;
+	clearMotor();
 }
 
 /**
@@ -648,11 +657,12 @@ void lowerArmTicks(int ticks,float x=118)
 {
 	while(SensorValue[armp]>ticks)
 	{
-		motor[leftArm]=-x;
-		motor[rightArm]=-x;
+		motor[leftArm]  = -x;
+		motor[rightArm] = -x;
+		motor[leftAdd]  = -x;
+	    motor[rightAdd] = -x;
 	}
-	motor[leftArm]=0;
-	motor[rightArm]=0;
+	clearMotor();
 }
 
 /**
@@ -665,11 +675,15 @@ void lowerArmTicks(int ticks,float x=118)
 */
 void raiseArmSeconds(float s, float x=118)
 {
-	motor[leftArm]=x;
-	motor[rightArm]=x;
+	motor[leftArm] = x;
+	motor[rightArm] = x;
+	motor[leftAdd] = x;
+	motor[rightAdd]=x;
 	wait1Msec(s*1000);
 	motor[leftArm]=0;
 	motor[rightArm]=0;
+	motor[leftAdd] = 0;
+	motor[rightAdd]=0;
 }
 
 
@@ -683,11 +697,15 @@ void raiseArmSeconds(float s, float x=118)
 */
 void lowerArmSeconds(float seconds, float x=118)
 {
-  motor[leftArm]= -x;
+    motor[leftArm]= -x;
 	motor[rightArm]= -x;
+	motor[leftAdd] = -x;
+	motor[rightAdd] -x;
 	wait1Msec(seconds*1000);
 	motor[leftArm]= 0;
 	motor[rightArm]= 0;
+	motor[leftAdd]= 0;
+	motor[rightAdd]= 0;
 }
 
 
@@ -702,7 +720,7 @@ void lowerArmSeconds(float seconds, float x=118)
 
 void opensky()
 {
-	SensorValue[pnsky]=1;
+	SensorValue[pnsky]=0;
 }
 
 /**
@@ -716,7 +734,7 @@ void opensky()
 
 void closesky()
 {
-	SensorValue[pnsky]=0;
+	SensorValue[pnsky]=1;
 }
 
 /**
@@ -734,7 +752,7 @@ void openintake()
 }
 
 /**
-* @void closesky
+* @void closeintake
 *
 * @desc closes intake
 *
@@ -746,6 +764,20 @@ void closeintake()
 {
 	SensorValue[pnintake]=0;
 }
+
+void pntest()
+{
+		for (int i=0;i<100;i++)
+	{
+		openintake();
+		opensky();
+		wait(1);
+		closesky();
+		//closeintake();
+		wait(1);
+	}
+}
+
 
 /**
 * @task armcontrol
@@ -779,6 +811,73 @@ task armcontroller()
 
 
 /**
+* @task LCDCLI
+*
+* @desc task that handles all use of LCD screen
+*
+* @args NONE
+*/
+task LCDCLI()
+{
+
+  //Turns on the Backlight
+	bLCDBacklight = true;
+
+	while (true) { // continuously running
+		if (nLCDButtons == leftButton) { //Scrolls to the left
+			if (lcdScreenMin == lcdScreen) {
+				lcdScreen = lcdScreenMax;
+				wait1Msec(250);
+			} else {
+				lcdScreen --;
+				wait1Msec(250);
+			}
+		}
+		if (nLCDButtons == rightButton) { //Scrolls to the right
+			if (lcdScreenMax == lcdScreen) {
+				lcdScreen = lcdScreenMin;
+				wait1Msec(250);
+			} else {
+				lcdScreen++;
+				wait1Msec(250);
+			}
+		}
+
+
+
+		if (lcdScreen == 0) {
+			if (consoleWritten == false) {
+				clearLCDLine(0);
+				clearLCDLine(1);
+
+				displayLCDString(0, 0, lcdConsole[1]);
+				displayLCDString(1, 0, lcdConsole[0]);
+
+				consoleWritten = true;
+				wait1Msec(500);
+			}
+		} else if(lcdScreen == 1){
+			clearLCDLine(0);
+			clearLCDLine(1);
+
+			string sensorStr1 = "";
+			string sensorStr2 = "";
+
+			displayLCDString(0, 0, "Accel: ");
+			sprintf(sensorStr1, "%1.2f", SensorValue[gyro]); //Build the value to be displayed
+			displayNextLCDString(sensorStr1);
+
+			displayLCDString(1, 0, "Gyro: ");
+			sprintf(sensorStr2, "%1.2f", SensorValue[yAxis]);    //Build the value to be displayed
+			displayNextLCDString(sensorStr2);
+
+		}
+	}
+
+}
+
+
+/**
 * @void println
 *
 * @desc prints string to LCD screen
@@ -787,13 +886,11 @@ task armcontroller()
 */
 void println(string str)
 {
-	clearLCDLine(0);
-	clearLCDLine(1);
 
-	displayLCDString(0, 0, consoleCache);
-	displayLCDString(0, 0, str);
+	lcdConsole[1] = lcdConsole[0];
+	lcdConsole[0] = str;
 
-	consoleCache = str;
+	consoleWritten = false;
 
 }
 
@@ -815,9 +912,31 @@ task yPosition(){
 
   while(true){
     wait1Msec(1);//1 millisecond sampling time
-    yAccel = (abs(SensorValue[yAxis] - originalY)) > 2 ? (SensorValue[yAxis] - originalY) / accelRatio : 0;
+    yAccel = (abs(SensorValue[yAxis] - originalY)) > 0 ? (SensorValue[yAxis] - originalY): 0;/// accelRatio : 0;
     //check if threshold is passed and set "instantanious" acceleration
     yVel += (yAccel / 1000);//update "instantainious" velocity
     yPos += (yVel / 1000);//update position
   }
+}
+
+/**
+* @task drivefodatpot
+*
+* @desc drives based on accelerometer value
+*
+* @args value float accelerometer distance value
+				x     int   speed of motor
+*/
+void drivefodatpot(float value, int x=118)
+{
+	float inity = abs(yPos);
+	float target = inity+value;
+	while(yPos < target)
+	{
+		motor[FR]=x;
+		motor[FL]=x;
+		motor[BR]=x;
+		motor[BL]=x;
+	}
+	clearMotor();
 }

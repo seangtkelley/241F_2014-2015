@@ -1,14 +1,20 @@
+#pragma config(UART_Usage, UART2, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(Sensor, in1,    armp,           sensorPotentiometer)
 #pragma config(Sensor, in2,    dial,           sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
-#pragma config(Sensor, in4,    acc,            sensorAccelerometer)
+#pragma config(Sensor, in4,    xAxis,          sensorAccelerometer)
+#pragma config(Sensor, in5,    yAxis,          sensorAccelerometer)
+#pragma config(Sensor, in6,    zAxis,          sensorAccelerometer)
 #pragma config(Sensor, dgtl1,  pnintake,       sensorDigitalOut)
 #pragma config(Sensor, dgtl2,  pnsky,          sensorDigitalOut)
-#pragma config(Motor,  port2,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
-#pragma config(Motor,  port3,           ML,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Sensor, dgtl3,  skyUltra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl5,  rightUltra,     sensorNone)
+#pragma config(Sensor, dgtl7,  leftUltra,      sensorNone)
+#pragma config(Motor,  port2,           leftAdd,       tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port3,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           FL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           BR,            tmotorVex393HighSpeed_MC29, openLoop)
-#pragma config(Motor,  port6,           MR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           rightAdd,      tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           FR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           rightArm,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           leftArm,       tmotorVex393_MC29, openLoop)
@@ -97,19 +103,8 @@ void autonomous()  //Programs are chosen by the value of the dial potentiometer.
 
 task main()
 {
-	//motor[leftArm]=118;
-	//motor[rightArm]=118;
-	///*
-	//raiseArmSeconds(1);
-	//lowerArmSeconds(1);
-	for(int i=0;i<100;i++)
-	{
-		closesky();
-		closeintake();
-		wait(1);
-		opensky();
-		openintake();
-		wait(1);
-	}
-	//*/
+	startTask(LCDCLI)
+	closeintake();
+	raiseArmSeconds(.5);
+
 }

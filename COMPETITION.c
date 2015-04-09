@@ -1,14 +1,20 @@
+#pragma config(UART_Usage, UART2, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(Sensor, in1,    armp,           sensorPotentiometer)
 #pragma config(Sensor, in2,    dial,           sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
-#pragma config(Sensor, in4,    acc,            sensorAccelerometer)
+#pragma config(Sensor, in4,    xAxis,          sensorAccelerometer)
+#pragma config(Sensor, in5,    yAxis,          sensorAccelerometer)
+#pragma config(Sensor, in6,    zAxis,          sensorAccelerometer)
 #pragma config(Sensor, dgtl1,  pnintake,       sensorDigitalOut)
 #pragma config(Sensor, dgtl2,  pnsky,          sensorDigitalOut)
-#pragma config(Motor,  port2,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
-#pragma config(Motor,  port3,           ML,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Sensor, dgtl3,  skyUltra,       sensorSONAR_cm)
+#pragma config(Sensor, dgtl5,  rightUltra,     sensorNone)
+#pragma config(Sensor, dgtl7,  leftUltra,      sensorNone)
+#pragma config(Motor,  port2,           leftAdd,       tmotorVex393HighSpeed_MC29, openLoop)
+#pragma config(Motor,  port3,           BL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           FL,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           BR,            tmotorVex393HighSpeed_MC29, openLoop)
-#pragma config(Motor,  port6,           MR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           rightAdd,      tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           FR,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           rightArm,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           leftArm,       tmotorVex393_MC29, openLoop)
@@ -117,67 +123,96 @@ task autonomous(){  //Programs are chosen by the value of the dial potentiometer
 
 task usercontrol(){
 	bool half=false;
-	int buttonToggleState8r = 0;//half speed
-  int buttonPressed8r = 0;
-  int buttonToggleState8d = 0;//Raise Arm
+	int buttonToggleState8R = 0;//Skyrise
+  int buttonPressed8R = 0;
+  int buttonToggleState8D = 0;//Skyrise
   int buttonPressed8D = 0;
-  int buttonToggleState7d = 0;//lower Arm
-  int buttonPressed7d = 0;
-	int buttonToggleState7l = 0;//pneumatics
-  int buttonPressed7l = 0;
+  int buttonToggleState7D = 0;//Intake
+  int buttonPressed7D = 0;
+	int buttonToggleState7L = 0;//Half Speed
+  int buttonPressed7L = 0;
 
 	//startTask(armcontrol);
 	while (true) {
 		if(bVEXNETActive){
 
-			//Toggle half speed---------------------------------------------------------------
+			//Toggle intake---------------------------------------------------------------
 			if( vexRT[ Btn7L ] == 1 ) {
-	      if( ! buttonPressed7l ) {
+	      if( ! buttonPressed7L ) {
 
 	      	// change the toggle state
-	      	buttonToggleState7l = 1 - buttonToggleState7l;
+	      	buttonToggleState7L = 1 - buttonToggleState7L;
 
 	        // Note the button is pressed
-	        buttonPressed7l = 1;
+	        buttonPressed7L = 1;
 	      }
 	  	} else {
 
 		    // the button is not pressed
-		    buttonPressed7l = 0;
+		    buttonPressed7L = 0;
 		  }
 
 		  // Now do something with our toggle flag
-	    if( buttonToggleState7l ) {
+	    if( buttonToggleState7L )
+	    {
 	      half=true;
-	    } else {
+	    }
+	    else
+	    {
 	      half=false;
 		  }
 
-	   //Toggle pneumatics------------------------------------------------
-		  if( vexRT[ Btn8R ] == 1 )
-	    {
-	      if( ! buttonPressed8r )
-	      {
+			//Toggle intake---------------------------------------------------------------
+			if( vexRT[ Btn8D ] == 1 ) {
+	      if( ! buttonPressed8D ) {
+
 	      	// change the toggle state
-	      	buttonToggleState8r = 1 - buttonToggleState8r;
+	      	buttonToggleState8D = 1 - buttonToggleState8D;
 
 	        // Note the button is pressed
-	        buttonPressed8r = 1;
+	        buttonPressed8D = 1;
+	      }
+	  	} else {
+
+		    // the button is not pressed
+		    buttonPressed8D = 0;
+		  }
+
+		  // Now do something with our toggle flag
+	    if( buttonToggleState8D )
+	    {
+	      closeintake();
+	    }
+	    else
+	    {
+	      openintake();
+		  }
+
+	   //Toggle skyrise------------------------------------------------
+		  if( vexRT[ Btn7D ] == 1 )
+	    {
+	      if( ! buttonPressed7D )
+	      {
+	      	// change the toggle state
+	      	buttonToggleState7D = 1 - buttonToggleState7D;
+
+	        // Note the button is pressed
+	        buttonPressed7D = 1;
 	      }
 	    }
 	    else
 	    {
 		    // the button is not pressed
-		    buttonPressed8r = 0;
+		    buttonPressed7D = 0;
 		  }
 	    // Now do something with our toggle flag
-	    if( buttonToggleState8r )
+	    if( buttonToggleState7D )
 	    {
-	      SensorValue[pnintake]=1;
+	      closesky();
 	    }
 	    else
 	    {
-	      SensorValue[pnintake]=0;
+	      opensky();
 		  }
 
 
@@ -186,18 +221,18 @@ task usercontrol(){
 				//give drive direct control.
 				motor[BR] = vexRT[Ch2];
 				motor[FR] = vexRT[Ch2];
-				motor[MR] = vexRT[Ch2];
+				//motor[MR] = vexRT[Ch2];
 				motor[BL] = vexRT[Ch3];
 				motor[FL] = vexRT[Ch3];
-				motor[ML] = vexRT[Ch3];
+				//motor[ML] = vexRT[Ch3];
 			} else if(half ==true) {
 				//give drive control but all motor maxes are a third of their orignal max.
 				motor[BR] = vexRT[Ch2]/3;
 				motor[FR] = vexRT[Ch2]/3;
-				motor[MR] = vexRT[Ch2]/3;
+				//motor[MR] = vexRT[Ch2]/3;
 				motor[BL] = vexRT[Ch3]/3;
 				motor[FL] = vexRT[Ch3]/3;
-				motor[ML] = vexRT[Ch3]/3;
+				//motor[ML] = vexRT[Ch3]/3;
 			}
 
 
@@ -206,16 +241,22 @@ task usercontrol(){
 			{
         	motor[rightArm] = -126;
         	motor[leftArm] = -126;
+        	motor[rightAdd] = -126;
+        	motor[leftAdd] = -126;
     	}
     	else if(vexRT[Btn6D] == true)
     	{
         	motor[rightArm] = 126;
         	motor[leftArm] = 126;
+        	motor[rightAdd] = 126;
+        	motor[leftAdd] = 126;
     	}
     	else
     	{
       	motor[rightArm] = 0;
       	motor[leftArm] = 0;
+      	motor[rightAdd] = 0;
+       	motor[leftAdd] = 0;
     	}
 			wait1Msec(10);
 		}
